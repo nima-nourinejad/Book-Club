@@ -95,12 +95,22 @@ app.post("/api/favorites", async (req, res) => {
   }
 });
 
+async function clearCollection() {
+	try {
+	  const db = mongoose.connection.db;
+	  await db.collection('favorites').deleteMany({});
+	} catch (err) {
+	  console.error(err);
+	}
+  }
+
 // Start server after connecting to the database
 async function startServer() {
   await connectToDatabase();
   app.listen(port, () => {
     console.log(`Server is listening on port ${port}`);
   });
+//   clearCollection();
 }
 
 startServer();
