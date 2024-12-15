@@ -1,5 +1,5 @@
 const express = require("express");
-const Joi = require("joi"); // Corrected Joi import
+const Joi = require("joi");
 const cors = require("cors");
 const mongoose = require("mongoose");
 
@@ -8,7 +8,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// MongoDB connection function
 async function connectToDatabase() {
   try {
     const connectionString = "mongodb://localhost:27017";
@@ -21,11 +20,10 @@ async function connectToDatabase() {
     console.log(`Connected to MongoDB at ${connectionString}/${dbName}`);
   } catch (err) {
     console.error("Error connecting to MongoDB: ", err);
-    process.exit(1); // Stop the server if MongoDB connection fails
+    process.exit(1);
   }
 }
 
-// Schema definition
 const schema = new mongoose.Schema({
   name: { type: String, required: true },
   book: { type: String, required: true },
@@ -33,7 +31,6 @@ const schema = new mongoose.Schema({
 
 const Favorite = mongoose.model("Favorite", schema);
 
-// Create a new favorite entry
 async function createFavorite(newName, newBook) {
   try {
     const document = new Favorite({
@@ -41,14 +38,13 @@ async function createFavorite(newName, newBook) {
       book: newBook,
     });
     const savedDocument = await document.save();
-    return savedDocument;  // Return saved document to the client
+    return savedDocument;
   } catch (err) {
     console.error("Error creating document: ", err.message);
     throw new Error("Failed to create favorite");
   }
 }
 
-// Get all favorite entries
 async function getFavorites() {
   try {
     const favorites = await Favorite.find();
@@ -59,7 +55,6 @@ async function getFavorites() {
   }
 }
 
-// Validate favorite entry using Joi
 function validateFavorite(body) {
   const schema = Joi.object({
     name: Joi.string().required(),
@@ -70,28 +65,26 @@ function validateFavorite(body) {
 
 const port = 5000;
 
-// GET route for fetching all favorites
 app.get("/api/favorites", async (req, res) => {
   try {
     const favorites = await getFavorites();
-    res.json(favorites);  // Send JSON response
+    res.json(favorites);
   } catch (err) {
-    res.status(500).send(err.message);  // Return error message if fetching fails
+    res.status(500).send(err.message);
   }
 });
 
-// POST route for creating a new favorite
 app.post("/api/favorites", async (req, res) => {
   const { error } = validateFavorite(req.body);
   if (error) {
-    return res.status(400).send(error.details[0].message);  // Send validation error
+    return res.status(400).send(error.details[0].message);
   }
 
   try {
     const favorite = await createFavorite(req.body.name, req.body.book);
-    res.status(201).json(favorite);  // Send back the created document
+    res.status(201).json(favorite);
   } catch (err) {
-    res.status(500).send(err.message);  // Send internal server error
+    res.status(500).send(err.message);
   }
 });
 
@@ -104,7 +97,6 @@ async function clearCollection() {
 	}
   }
 
-// Start server after connecting to the database
 async function startServer() {
   await connectToDatabase();
   app.listen(port, () => {
