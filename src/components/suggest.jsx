@@ -19,13 +19,13 @@ class Suggest extends Component {
     if (btn) {
       return "btn btn-primary mx-auto d-block";
     }
-    return "btn btn-primary mx-auto d-block disabled";
+    return "btn btn-danger mx-auto d-block disabled";
   };
   btnText = (btn) => {
 	if (btn) {
 	  return "Submit";
 	}
-	return "Submitting...";
+	return "Wait";
   }
 
   render() {
