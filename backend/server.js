@@ -24,24 +24,41 @@ app.use(cors());
 //   }
 // }
 
+// async function connectToDatabase() {
+//   try {
+//     const user = "nima";
+//     const password = "123";
+//     const cluster = "cluster0.gpkfp.mongodb.net";
+//     const dbName = "dbName";
+//     const options = "retryWrites=true&w=majority";
+
+//     const connectionString = `mongodb+srv://${user}:${password}@${cluster}`;
+//     const uri = `${connectionString}/${dbName}?${options}`;
+
+//     await mongoose.connect(uri);
+//     console.log("Connected to MongoDB");
+//   } catch (err) {
+//     console.error("Error connecting to MongoDB: ", err);
+//     process.exit(1);
+//   }
+// }
+
+
 async function connectToDatabase() {
   try {
-    const user = "nima";
-    const password = "123";
-    const cluster = "cluster0.gpkfp.mongodb.net";
-    const dbName = "dbName";
-    const options = "retryWrites=true&w=majority";
-
-    const connectionString = `mongodb+srv://${user}:${password}@${cluster}`;
-    const uri = `${connectionString}/${dbName}?${options}`;
-
-    await mongoose.connect(uri);
+    const connectionString = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}`;
+    const uri = `${connectionString}/${process.env.DB_NAME}?${process.env.DB_OPTIONS}`;
+    await mongoose.connect(uri, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
     console.log("Connected to MongoDB");
   } catch (err) {
     console.error("Error connecting to MongoDB: ", err);
     process.exit(1);
   }
 }
+
 
 const schema = new mongoose.Schema({
   name: { type: String, required: true },
