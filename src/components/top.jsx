@@ -6,7 +6,7 @@ class Top extends Component {
       <div className="row mb-5 text-center">
         <div className="col-12">
           <img
-            src="/images/topImage.jpg"
+            src="https://nima-nourinejad.github.io/Book-Club/images/topImage.jpg"
             className="img-fluid rounded"
             alt="top"
           />
