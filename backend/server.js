@@ -8,16 +8,35 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// async function connectToDatabase() {
+//   try {
+//     const connectionString = "mongodb://localhost:27017";
+//     const dbName = "database";
+//     const options = {
+//       useNewUrlParser: true,
+//       useUnifiedTopology: true,
+//     };
+//     await mongoose.connect(`${connectionString}/${dbName}`, options);
+//     console.log(`Connected to MongoDB at ${connectionString}/${dbName}`);
+//   } catch (err) {
+//     console.error("Error connecting to MongoDB: ", err);
+//     process.exit(1);
+//   }
+// }
+
 async function connectToDatabase() {
   try {
-    const connectionString = "mongodb://localhost:27017";
-    const dbName = "database";
-    const options = {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    };
-    await mongoose.connect(`${connectionString}/${dbName}`, options);
-    console.log(`Connected to MongoDB at ${connectionString}/${dbName}`);
+    const user = "nima";
+    const password = "123";
+    const cluster = "cluster0.gpkfp.mongodb.net";
+    const dbName = "dbName";
+    const options = "retryWrites=true&w=majority";
+
+    const connectionString = `mongodb+srv://${user}:${password}@${cluster}`;
+    const uri = `${connectionString}/${dbName}?${options}`;
+
+    await mongoose.connect(uri);
+    console.log("Connected to MongoDB");
   } catch (err) {
     console.error("Error connecting to MongoDB: ", err);
     process.exit(1);
@@ -89,20 +108,20 @@ app.post("/api/favorites", async (req, res) => {
 });
 
 async function clearCollection() {
-	try {
-	  const db = mongoose.connection.db;
-	  await db.collection('favorites').deleteMany({});
-	} catch (err) {
-	  console.error(err);
-	}
+  try {
+    const db = mongoose.connection.db;
+    await db.collection("favorites").deleteMany({});
+  } catch (err) {
+    console.error(err);
   }
+}
 
 async function startServer() {
   await connectToDatabase();
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });
-//   clearCollection();
+  //   clearCollection();
 }
 
 startServer();
