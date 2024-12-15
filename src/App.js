@@ -12,6 +12,7 @@ class App extends Component {
     favoriteBook: "",
     favorites: [],
     result: 0,
+    btn: true,
   };
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
@@ -28,7 +29,9 @@ class App extends Component {
   }
   fetchFavorites = async () => {
     try {
-      const response = await axios.get(`${this.backEndUrl}/${this.apiEndpoint}`);
+      const response = await axios.get(
+        `${this.backEndUrl}/${this.apiEndpoint}`
+      );
       if (response.status === 200) {
         this.setState({ favorites: response.data });
       }
@@ -38,15 +41,19 @@ class App extends Component {
   };
 
   handleSubmit = async () => {
-    const { name, favoriteBook } = this.state;
-    if (!name || !favoriteBook) {
+    const { name, favoriteBook, btn } = this.state;
+    if (!btn || !name || !favoriteBook) {
       return;
     }
     try {
-      const response = await axios.post(`${this.backEndUrl}/${this.apiEndpoint}`, {
-        name,
-        book: favoriteBook,
-      });
+      this.setState({ btn: false });
+      const response = await axios.post(
+        `${this.backEndUrl}/${this.apiEndpoint}`,
+        {
+          name,
+          book: favoriteBook,
+        }
+      );
       if (response.status === 201) {
         this.setState({
           name: "",
@@ -54,15 +61,15 @@ class App extends Component {
         });
         this.setState({ result: 1 });
         setTimeout(() => {
-          this.setState({ result: 0 });
+          this.setState({ result: 0, btn: true });
         }, 2000);
         this.fetchFavorites();
       }
     } catch (error) {
-		this.setState({ result: 2 });
-		setTimeout(() => {
-		  this.setState({ result: 0 });
-		}, 2000);
+      this.setState({ result: 2 });
+      setTimeout(() => {
+        this.setState({ result: 0, btn: true });
+      }, 2000);
     }
   };
 
@@ -80,7 +87,8 @@ class App extends Component {
             favoriteBook={this.state.favoriteBook}
             onInputChange={this.handleInputChange}
             onSubmit={this.handleSubmit}
-			result={this.state.result}
+            result={this.state.result}
+			btn={this.state.btn}
           />
           <Others favorites={this.state.favorites} />
         </div>
