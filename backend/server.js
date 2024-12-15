@@ -63,7 +63,7 @@ function validateFavorite(body) {
   return schema.validate(body);
 }
 
-const port = 5000;
+const PORT = process.env.PORT || 5000;
 
 app.get("/api/favorites", async (req, res) => {
   try {
@@ -99,8 +99,8 @@ async function clearCollection() {
 
 async function startServer() {
   await connectToDatabase();
-  app.listen(port, () => {
-    console.log(`Server is listening on port ${port}`);
+  app.listen(PORT, () => {
+    console.log(`Server is listening on port ${PORT}`);
   });
 //   clearCollection();
 }
