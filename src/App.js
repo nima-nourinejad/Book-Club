@@ -13,6 +13,8 @@ class App extends Component {
     favorites: [],
     result: 0,
   };
+  backEndUrl = "https://book-club-qr21.onrender.com";
+  apiEndpoint = "api/favorites";
   handleInputChange = (key, value) => {
     if (key === "name") {
       this.setState({ name: value });
@@ -26,7 +28,7 @@ class App extends Component {
   }
   fetchFavorites = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/favorites");
+      const response = await axios.get(`${this.backEndUrl}/${this.apiEndpoint}`);
       if (response.status === 200) {
         this.setState({ favorites: response.data });
       }
@@ -41,7 +43,7 @@ class App extends Component {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:5000/api/favorites", {
+      const response = await axios.post(`${this.backEndUrl}/${this.apiEndpoint}`, {
         name,
         book: favoriteBook,
       });
@@ -57,11 +59,10 @@ class App extends Component {
         this.fetchFavorites();
       }
     } catch (error) {
-      console.error(error);
-      this.setState({ result: 2 });
-      setTimeout(() => {
-        this.setState({ result: 0 }, 2000);
-      });
+		this.setState({ result: 2 });
+		setTimeout(() => {
+		  this.setState({ result: 0 });
+		}, 2000);
     }
   };
 
