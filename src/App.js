@@ -4,6 +4,7 @@ import NavBar from "./components/navBar";
 import Top from "./components/top";
 import Suggest from "./components/suggest";
 import Others from "./components/others";
+import Sign from "./components/sign";
 import axios from "axios";
 
 class App extends Component {
@@ -13,6 +14,13 @@ class App extends Component {
     favorites: [],
     result: 0,
     btn: true,
+	signedIn: false,
+	confirmed_user: "",
+	user_signIn: "",
+	user_signUp: "",
+	signIn_result: 0,
+	signUp_result: 0,
+	name_signUp: "",
   };
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
@@ -23,7 +31,18 @@ class App extends Component {
     if (key === "favoriteBook") {
       this.setState({ favoriteBook: value });
     }
+	if (key === "user_signIn") {
+		this.setState({ user_signIn: value });
+	}
+	if (key === "user_signUp") {
+		this.setState({ user_signUp: value });
+	}
+	if (key === "name_signUp") {
+		this.setState({ name_signUp: value });
+	}
   };
+  handle_SignIn = async () => {};
+  handle_SignUp = async () => {};
   componentDidMount() {
     this.fetchFavorites();
   }
@@ -82,6 +101,18 @@ class App extends Component {
         <div className="container">
           <NavBar />
           <Top />
+		  <Sign
+		  	user_signIn={this.state.user_signIn}
+			user_signUp={this.state.user_signUp}
+			onInputChange={this.handleInputChange}
+			onSignIn={this.handle_SignIn}
+			onSignUp={this.handle_SignUp}
+			signIn_result={this.state.signIn_result}
+			signUp_result={this.state.signUp_result}
+			signedIn={this.state.signedIn}
+			confirmed_user={this.state.confirmed_user}
+			name_signUp={this.state.name_signUp}
+		  />
           <Suggest
             name={this.state.name}
             favoriteBook={this.state.favoriteBook}
