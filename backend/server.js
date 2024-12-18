@@ -65,7 +65,14 @@ const schema = new mongoose.Schema({
   book: { type: String, required: true },
 });
 
+const schema_user = new mongoose.Schema({
+	  name: { type: String, required: true },
+	  username: { type: String, required: true },
+	  books: { type: Array, default: [] },
+});
+
 const Favorite = mongoose.model("Favorite", schema);
+const User = mongoose.model("User", schema_user);
 
 async function createFavorite(newName, newBook) {
   try {
@@ -78,6 +85,19 @@ async function createFavorite(newName, newBook) {
   } catch (err) {
     console.error("Error creating document: ", err.message);
     throw new Error("Failed to create favorite");
+  }
+}
+
+async function createUser(newName, newUsername) {
+	  try {
+	const document = new User({
+	  name: newName,
+	  username: newUsername,
+	});
+	const savedDocument = await document.save();
+	return savedDocument;
+  } catch (err) {
+	console.error("Error creating user: ", err.message);
   }
 }
 
@@ -97,6 +117,29 @@ function validateFavorite(body) {
     book: Joi.string().required(),
   });
   return schema.validate(body);
+}
+
+function validateUser(body) {
+	  const schema = Joi.object({
+		name: Joi.string().required(),
+		username: Joi.string().required(),
+	  });
+	  return schema.validate(body);
+}
+
+function validateBook(body) {
+	  const schema = Joi.object({
+		username: Joi.string().required(),
+		book: Joi.string().required(),
+	  });
+	  return schema.validate(body);
+}
+
+function validateUserName(body) {
+	  const schema = Joi.object({
+		username: Joi.string().required(),
+	  });
+	  return schema.validate(body);
 }
 
 const PORT = process.env.PORT || 5000;
@@ -124,12 +167,78 @@ app.post("/api/favorites", async (req, res) => {
   }
 });
 
-async function clearCollection() {
+app.post("/api/users", async (req, res) => {
+	  const { error } = validateUser(req.body);
+	  if (error) {
+		return res.status(422).send(error.details[0].message);
+	  }
+	  try {
+		const oldUser = await User.findOne({ username: req.body.username });
+		if (oldUser) {
+			return res.status(400).send("Username already exists");
+		}
+		const user = await createUser(req.body.name, req.body.username);
+		res.status(201).json(user);
+	  } catch (err) {
+		res.status(500).send(err.message);
+	  }
+});
+
+app.put("/api/users", async (req, res) => {
+	  const { error } = validateBook(req.body);
+	  if (error) {
+		return res.status(422).send(error.details[0].message);
+	  }
+	  try {
+		const user = User.findOne({ username: req.body.username });
+		if (!user) {
+			return res.status(404).send("User not found");
+		}
+		await User.updateOne({
+			username: req.body.username,
+		},
+		{
+			$push: { books: req.body.book },
+		});
+		user = await user.findOne({ username: req.body.username });
+		res.status(200).json(user);
+	  }
+	  catch (err) {
+		res.status(500).send(err.message);
+	  }
+});
+
+app.get("/api/users", async (req, res) => {
+	const { error } = validateUserName(req.body);
+	if (error) {
+		return res.status(422).send(error.details[0].message);
+	}
+	try {
+		const user = await User.findOne({username: req.body.username});
+		if (!user) {
+			return res.status(404).send("User not found");
+		}
+		res.status(200).json(user);
+	} catch (err) {
+		res.status(500).send(err.message);
+	}
+});
+
+
+async function clearFavorites() {
   try {
     const db = mongoose.connection.db;
     await db.collection("favorites").deleteMany({});
   } catch (err) {
     console.error(err);
+  }
+}
+async function clearUsers() {
+	  try {
+	const db = mongoose.connection.db;
+	await db.collection("users").deleteMany({});
+  } catch (err) {
+	console.error(err);
   }
 }
 
