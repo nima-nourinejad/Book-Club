@@ -24,6 +24,7 @@ class App extends Component {
   };
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
+  apiUserEndpoint = "api/users";
   handleInputChange = (key, value) => {
     if (key === "name") {
       this.setState({ name: value });
@@ -41,8 +42,68 @@ class App extends Component {
 		this.setState({ name_signUp: value });
 	}
   };
-  handle_SignIn = async () => {};
-  handle_SignUp = async () => {};
+  handle_SignUp = async () => {
+	const {name_signUp, user_signUp, signedIn} = this.state;
+	if (!name_signUp || !user_signUp || signedIn) {
+		return;
+	}
+	try {
+		const response = await axios.post(`${this.backEndUrl}/${this.apiUserEndpoint}`, {
+			name: name_signUp,
+			username: user_signUp,
+		});
+		if (response.status === 201) {
+			this.setState({signUp_result: 1, name_signUp: "", user_signUp: ""});
+			setTimeout(() => {
+				this.setState({signUp_result: 0});
+			}, 2000);
+		}
+		else {
+			this.setState({signUp_result: 2});
+			setTimeout(() => {
+				this.setState({signUp_result: 0});
+			}, 2000);
+		}
+	}
+	catch (error) {
+		this.setState({signUp_result: 2});
+		setTimeout(() => {
+			this.setState({signUp_result: 0});
+		}, 2000);
+	}
+
+  };
+  handle_SignIn = async () => {
+	const {user_signIn, signedIn} = this.state;
+	if (!user_signIn || signedIn) {
+		return;
+	}
+	try {
+		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}`, {
+			params: { username: user_signIn },
+		});
+		if (response.status === 200) {
+			this.setState({signIn_result: 1, confirmed_user: user_signIn});
+			setTimeout(() => {
+				this.setState({signIn_result: 0, signedIn: true});
+			}, 2000);
+		}
+		else {
+			this.setState({signIn_result: 2});
+			setTimeout(() => {
+				this.setState({signIn_result: 0});
+			}, 2000);
+		}
+	}
+	catch (error) {
+		this.setState({signIn_result: 2});
+		setTimeout(() => {
+			this.setState({signIn_result: 0});
+		}
+		, 2000);
+	}
+  };
+
   componentDidMount() {
     this.fetchFavorites();
   }

@@ -1,6 +1,25 @@
 import React, { Component } from "react";
 
 class Sign extends Component {
+
+	handleSignUpNotification = (signUp_result) => {
+		if (signUp_result === 1) {
+			return (
+				<div className="alert alert-success" role="alert">
+					Sign Up successful
+				</div>
+			);
+		}
+		if (signUp_result === 2) {
+			return (
+				<div className="alert alert-danger" role="alert">
+					Sign Up failed
+				</div>
+			);
+		}
+		return "";
+	};
+
   designSign = (
     user_signIn,
     user_signUp,
@@ -66,6 +85,7 @@ class Sign extends Component {
                 >
                   Sign Up
                 </button>
+				<div>{this.handleSignUpNotification(signUp_result)}</div>
               </div>
             </div>
             <div className="col-12 col-md-6">

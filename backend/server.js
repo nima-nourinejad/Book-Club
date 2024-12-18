@@ -208,13 +208,13 @@ app.put("/api/users", async (req, res) => {
 	  }
 });
 
-app.get("/api/users", async (req, res) => {
-	const { error } = validateUserName(req.body);
-	if (error) {
-		return res.status(422).send(error.details[0].message);
+app.get(`/api/users/:username`, async (req, res) => {
+	const { username } = req.params
+	if (!username) {
+		return res.status(422).send("No username provided");
 	}
 	try {
-		const user = await User.findOne({username: req.body.username});
+		const user = await User.findOne({username});
 		if (!user) {
 			return res.status(404).send("User not found");
 		}
