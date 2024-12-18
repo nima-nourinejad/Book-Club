@@ -209,7 +209,7 @@ app.put("/api/users", async (req, res) => {
 });
 
 app.get(`/api/users/:username`, async (req, res) => {
-	const { username } = req.params
+	const { username } = req.params;
 	if (!username) {
 		return res.status(422).send("No username provided");
 	}

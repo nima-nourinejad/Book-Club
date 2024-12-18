@@ -79,13 +79,12 @@ class App extends Component {
 		return;
 	}
 	try {
-		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}`, {
-			params: { username: user_signIn },
-		});
+		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`);
 		if (response.status === 200) {
-			this.setState({signIn_result: 1, confirmed_user: user_signIn});
+			const name = response.data.name;
+			this.setState({signIn_result: 1, confirmed_user: name, signedIn: true});
 			setTimeout(() => {
-				this.setState({signIn_result: 0, signedIn: true});
+				this.setState({signIn_result: 0});
 			}, 2000);
 		}
 		else {
