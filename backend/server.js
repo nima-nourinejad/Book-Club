@@ -229,11 +229,14 @@ app.get("/api/users", async (req, res) => {
 		const books = [];
 		const users = await User.find();
 		users.forEach((user) => {
-			let member = {
-				name: user.name,
-				books: user.books.toString(),
-			};
-			books.push(member);
+			
+			if (user.books.length > 0) {
+				let member = {
+					name: user.name,
+					books: user.books.toString(),
+				};
+				books.push(member);
+		}
 		});
 		res.status(200).json(books);
 	} catch (err) {
