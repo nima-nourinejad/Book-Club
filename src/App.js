@@ -104,14 +104,16 @@ class App extends Component {
       if (response.status === 200) {
         this.setState({ favorites: response.data });
       }
+	  console.log(response.data);
     } catch (error) {
       console.error(error);
     }
 	try {
 		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}`);
 		if (response.status === 200) {
-			const newFavorites = this.state.favorites + response.data;
-			this.setState({favorites: newFavorites});
+			// const newFavorites = this.state.favorites + response.data;
+			// this.setState({favorites: newFavorites});
+			console.log(response.data);
 		}
 	}
 	catch (error) {

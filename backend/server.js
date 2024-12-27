@@ -233,7 +233,7 @@ app.get("/api/users", async (req, res) => {
 			if (user.books.length > 0) {
 				let member = {
 					name: user.name,
-					books: user.books.toString(),
+					book: user.books.toString(),
 				};
 				books.push(member);
 		}
