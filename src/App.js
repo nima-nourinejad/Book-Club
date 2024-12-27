@@ -26,21 +26,10 @@ class App extends Component {
   apiEndpoint = "api/favorites";
   apiUserEndpoint = "api/users";
   handleInputChange = (key, value) => {
-    if (key === "name") {
-      this.setState({ name: value });
-    }
-    if (key === "favoriteBook") {
-      this.setState({ favoriteBook: value });
-    }
-	if (key === "user_signIn") {
-		this.setState({ user_signIn: value });
+	if (key === 'name' && this.state.signedIn) {
+		return;
 	}
-	if (key === "user_signUp") {
-		this.setState({ user_signUp: value });
-	}
-	if (key === "name_signUp") {
-		this.setState({ name_signUp: value });
-	}
+	this.setState({ [key]: value });
   };
   handle_SignUp = async () => {
 	const {name_signUp, user_signUp, signedIn} = this.state;
@@ -82,7 +71,7 @@ class App extends Component {
 		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`);
 		if (response.status === 200) {
 			const name = response.data.name;
-			this.setState({signIn_result: 1, confirmed_user: name, signedIn: true});
+			this.setState({signIn_result: 1, confirmed_user: name, signedIn: true, name: name});
 			setTimeout(() => {
 				this.setState({signIn_result: 0});
 			}, 2000);
@@ -111,34 +100,48 @@ class App extends Component {
       const response = await axios.get(
         `${this.backEndUrl}/${this.apiEndpoint}`
       );
+	  
       if (response.status === 200) {
         this.setState({ favorites: response.data });
       }
     } catch (error) {
       console.error(error);
     }
+	try {
+		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}`);
+		if (response.status === 200) {
+			const newFavorites = this.state.favorites + response.data;
+			this.setState({favorites: newFavorites});
+		}
+	}
+	catch (error) {
+		console.error(error);
+	}
+
   };
 
   handleSubmit = async () => {
-    const { name, favoriteBook, btn } = this.state;
+    const { name, favoriteBook, btn, signedIn, user_signIn } = this.state;
     if (!btn || !name || !favoriteBook) {
       return;
     }
     try {
       this.setState({ btn: false });
-      const response = await axios.post(
-        `${this.backEndUrl}/${this.apiEndpoint}`,
-        {
-          name,
-          book: favoriteBook,
-        }
-      );
+	  const response = await axios.put(
+		`${this.backEndUrl}/${this.apiUserEndpoint}`,
+		{
+			username: user_signIn,
+			book: favoriteBook,
+		}
+	);
       if (response.status === 201) {
+		if (!signedIn) {
+			this.setState({name: ""});
+		}
         this.setState({
-          name: "",
+          result: 1,
           favoriteBook: "",
         });
-        this.setState({ result: 1 });
         setTimeout(() => {
           this.setState({ result: 0, btn: true });
         }, 2000);
