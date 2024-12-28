@@ -14,82 +14,86 @@ class App extends Component {
     favorites: [],
     result: 0,
     btn: true,
-	signedIn: false,
-	confirmed_user: "",
-	user_signIn: "",
-	user_signUp: "",
-	signIn_result: 0,
-	signUp_result: 0,
-	name_signUp: "",
+    signedIn: false,
+    confirmed_user: "",
+    user_signIn: "",
+    user_signUp: "",
+    signIn_result: 0,
+    signUp_result: 0,
+    name_signUp: "",
   };
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
   apiUserEndpoint = "api/users";
   handleInputChange = (key, value) => {
-	if (key === 'name' && this.state.signedIn) {
-		return;
-	}
-	this.setState({ [key]: value });
+    if (key === "name" && this.state.signedIn) {
+      return;
+    }
+    this.setState({ [key]: value });
   };
   handle_SignUp = async () => {
-	const {name_signUp, user_signUp, signedIn} = this.state;
-	if (!name_signUp || !user_signUp || signedIn) {
-		return;
-	}
-	try {
-		const response = await axios.post(`${this.backEndUrl}/${this.apiUserEndpoint}`, {
-			name: name_signUp,
-			username: user_signUp,
-		});
-		if (response.status === 201) {
-			this.setState({signUp_result: 1, name_signUp: "", user_signUp: ""});
-			setTimeout(() => {
-				this.setState({signUp_result: 0});
-			}, 2000);
-		}
-		else {
-			this.setState({signUp_result: 2});
-			setTimeout(() => {
-				this.setState({signUp_result: 0});
-			}, 2000);
-		}
-	}
-	catch (error) {
-		this.setState({signUp_result: 2});
-		setTimeout(() => {
-			this.setState({signUp_result: 0});
-		}, 2000);
-	}
-
+    const { name_signUp, user_signUp, signedIn } = this.state;
+    if (!name_signUp || !user_signUp || signedIn) {
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `${this.backEndUrl}/${this.apiUserEndpoint}`,
+        {
+          name: name_signUp,
+          username: user_signUp,
+        }
+      );
+      if (response.status === 201) {
+        this.setState({ signUp_result: 1, name_signUp: "", user_signUp: "" });
+        setTimeout(() => {
+          this.setState({ signUp_result: 0 });
+        }, 2000);
+      } else {
+        this.setState({ signUp_result: 2 });
+        setTimeout(() => {
+          this.setState({ signUp_result: 0 });
+        }, 2000);
+      }
+    } catch (error) {
+      this.setState({ signUp_result: 2 });
+      setTimeout(() => {
+        this.setState({ signUp_result: 0 });
+      }, 2000);
+    }
   };
   handle_SignIn = async () => {
-	const {user_signIn, signedIn} = this.state;
-	if (!user_signIn || signedIn) {
-		return;
-	}
-	try {
-		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`);
-		if (response.status === 200) {
-			const name = response.data.name;
-			this.setState({signIn_result: 1, confirmed_user: name, signedIn: true, name: name});
-			setTimeout(() => {
-				this.setState({signIn_result: 0});
-			}, 2000);
-		}
-		else {
-			this.setState({signIn_result: 2});
-			setTimeout(() => {
-				this.setState({signIn_result: 0});
-			}, 2000);
-		}
-	}
-	catch (error) {
-		this.setState({signIn_result: 2});
-		setTimeout(() => {
-			this.setState({signIn_result: 0});
-		}
-		, 2000);
-	}
+    const { user_signIn, signedIn } = this.state;
+    if (!user_signIn || signedIn) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
+      );
+      if (response.status === 200) {
+        const name = response.data.name;
+        this.setState({
+          signIn_result: 1,
+          confirmed_user: name,
+          signedIn: true,
+          name: name,
+        });
+        setTimeout(() => {
+          this.setState({ signIn_result: 0 });
+        }, 2000);
+      } else {
+        this.setState({ signIn_result: 2 });
+        setTimeout(() => {
+          this.setState({ signIn_result: 0 });
+        }, 2000);
+      }
+    } catch (error) {
+      this.setState({ signIn_result: 2 });
+      setTimeout(() => {
+        this.setState({ signIn_result: 0 });
+      }, 2000);
+    }
   };
 
   componentDidMount() {
@@ -100,26 +104,25 @@ class App extends Component {
       const response = await axios.get(
         `${this.backEndUrl}/${this.apiEndpoint}`
       );
-	  
+
       if (response.status === 200) {
         this.setState({ favorites: response.data });
       }
-	  console.log(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
-	try {
-		const response = await axios.get(`${this.backEndUrl}/${this.apiUserEndpoint}`);
-		if (response.status === 200) {
-			// const newFavorites = this.state.favorites + response.data;
-			// this.setState({favorites: newFavorites});
-			console.log(response.data);
-		}
-	}
-	catch (error) {
-		console.error(error);
-	}
-
+    try {
+      const response = await axios.get(
+        `${this.backEndUrl}/${this.apiUserEndpoint}`
+      );
+      if (response.status === 200) {
+        const newFavorites = this.state.favorites.concat(response.data);
+        this.setState({ favorites: newFavorites });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   handleSubmit = async () => {
@@ -129,17 +132,17 @@ class App extends Component {
     }
     try {
       this.setState({ btn: false });
-	  const response = await axios.put(
-		`${this.backEndUrl}/${this.apiUserEndpoint}`,
-		{
-			username: user_signIn,
-			book: favoriteBook,
-		}
-	);
-      if (response.status === 201) {
-		if (!signedIn) {
-			this.setState({name: ""});
-		}
+      const response = await axios.put(
+        `${this.backEndUrl}/${this.apiUserEndpoint}`,
+        {
+          username: user_signIn,
+          book: favoriteBook,
+        }
+      );
+      if (response.status === 200) {
+        if (!signedIn) {
+          this.setState({ name: "" });
+        }
         this.setState({
           result: 1,
           favoriteBook: "",
@@ -166,25 +169,25 @@ class App extends Component {
         <div className="container">
           <NavBar />
           <Top />
-		  <Sign
-		  	user_signIn={this.state.user_signIn}
-			user_signUp={this.state.user_signUp}
-			onInputChange={this.handleInputChange}
-			onSignIn={this.handle_SignIn}
-			onSignUp={this.handle_SignUp}
-			signIn_result={this.state.signIn_result}
-			signUp_result={this.state.signUp_result}
-			signedIn={this.state.signedIn}
-			confirmed_user={this.state.confirmed_user}
-			name_signUp={this.state.name_signUp}
-		  />
+          <Sign
+            user_signIn={this.state.user_signIn}
+            user_signUp={this.state.user_signUp}
+            onInputChange={this.handleInputChange}
+            onSignIn={this.handle_SignIn}
+            onSignUp={this.handle_SignUp}
+            signIn_result={this.state.signIn_result}
+            signUp_result={this.state.signUp_result}
+            signedIn={this.state.signedIn}
+            confirmed_user={this.state.confirmed_user}
+            name_signUp={this.state.name_signUp}
+          />
           <Suggest
             name={this.state.name}
             favoriteBook={this.state.favoriteBook}
             onInputChange={this.handleInputChange}
             onSubmit={this.handleSubmit}
             result={this.state.result}
-			btn={this.state.btn}
+            btn={this.state.btn}
           />
           <Others favorites={this.state.favorites} />
         </div>
