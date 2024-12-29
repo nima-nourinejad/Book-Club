@@ -234,6 +234,7 @@ app.get("/api/users", async (req, res) => {
 				let member = {
 					name: user.name,
 					book: user.books.toString(),
+					_id: user._id,
 				};
 				books.push(member);
 		}

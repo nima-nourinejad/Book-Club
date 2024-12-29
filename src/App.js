@@ -108,7 +108,6 @@ class App extends Component {
       if (response.status === 200) {
         this.setState({ favorites: response.data });
       }
-      console.log(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -139,6 +138,7 @@ class App extends Component {
           book: favoriteBook,
         }
       );
+	  console.log(response.status);
       if (response.status === 200) {
         if (!signedIn) {
           this.setState({ name: "" });
