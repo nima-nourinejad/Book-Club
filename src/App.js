@@ -78,6 +78,7 @@ class App extends Component {
           confirmed_user: name,
           signedIn: true,
           name: name,
+		  user_signIn: user_signIn,
         });
         setTimeout(() => {
           this.setState({ signIn_result: 0 });
@@ -130,6 +131,7 @@ class App extends Component {
       return;
     }
     try {
+		console.log(this.state.user_signIn);
       this.setState({ btn: false });
       const response = await axios.put(
         `${this.backEndUrl}/${this.apiUserEndpoint}`,

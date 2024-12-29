@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import Favorite from './favorite';
 
 class Others extends Component {
+
+	key = 0;
   
 	render() {
 	  const { favorites = [] } = this.props;
@@ -17,7 +18,7 @@ class Others extends Component {
 			) : (
 			  favorites.map((favorite) => (
 				<Favorite
-				  key={favorite._id}
+				  key={++this.key}
 				  name={favorite.name}
 				  favorite={favorite.book}
 				/>
