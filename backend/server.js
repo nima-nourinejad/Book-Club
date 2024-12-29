@@ -268,8 +268,8 @@ async function startServer() {
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });
-  clearFavorites();
-  clearUsers();
+//   clearFavorites();
+//   clearUsers();
 }
 
 startServer();
