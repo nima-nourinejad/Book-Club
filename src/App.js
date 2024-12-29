@@ -101,24 +101,25 @@ class App extends Component {
     this.fetchFavorites();
   }
   fetchFavorites = async () => {
-    try {
-      const response = await axios.get(
-        `${this.backEndUrl}/${this.apiEndpoint}`
-      );
+    // try {
+    //   const response = await axios.get(
+    //     `${this.backEndUrl}/${this.apiEndpoint}`
+    //   );
 
-      if (response.status === 200) {
-        this.setState({ favorites: response.data });
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    //   if (response.status === 200) {
+    //     this.setState({ favorites: response.data });
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
     try {
       const response = await axios.get(
         `${this.backEndUrl}/${this.apiUserEndpoint}`
       );
       if (response.status === 200) {
-        const newFavorites = this.state.favorites.concat(response.data);
-        this.setState({ favorites: newFavorites });
+        // const newFavorites = this.state.favorites.concat(response.data);
+        // this.setState({ favorites: newFavorites });
+		this.setState({ favorites: response.data });
       }
     } catch (error) {
       console.error(error);
@@ -127,7 +128,7 @@ class App extends Component {
 
   handleSubmit = async () => {
     const { name, favoriteBook, btn, signedIn, user_signIn } = this.state;
-    if (!btn || !name || !favoriteBook) {
+    if (!btn || !name || !favoriteBook || !signedIn) {
       return;
     }
     try {
