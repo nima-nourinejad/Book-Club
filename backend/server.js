@@ -200,8 +200,9 @@ app.put("/api/users", async (req, res) => {
 		{
 			$push: { books: req.body.book },
 		});
-		user = await User.findOne({ username: req.body.username });
-		res.status(200).json(user);
+		// user = await User.findOne({ username: req.body.username });
+		// res.status(200).json(user);
+		res.status(200).send("Book added to user");
 	  }
 	  catch (err) {
 		res.status(500).send(err.message);
