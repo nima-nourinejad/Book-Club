@@ -200,9 +200,8 @@ app.put("/api/users", async (req, res) => {
 		{
 			$push: { books: req.body.book },
 		});
-		let user = await User.findOne({ username: req.body.username });
-		res.status(200).json(user);
-		// res.status(200).send("Book added to user");
+		let userModified = await User.findOne({ username: req.body.username });
+		res.status(200).json(userModified);
 	  }
 	  catch (err) {
 		res.status(500).send(err.message);
@@ -269,7 +268,8 @@ async function startServer() {
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });
-  //   clearCollection();
+  clearFavorites();
+  clearUsers();
 }
 
 startServer();
