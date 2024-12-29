@@ -132,7 +132,6 @@ class App extends Component {
       return;
     }
     try {
-		console.log(this.state.user_signIn);
       this.setState({ btn: false });
       const response = await axios.put(
         `${this.backEndUrl}/${this.apiUserEndpoint}`,
@@ -141,7 +140,6 @@ class App extends Component {
           book: favoriteBook,
         }
       );
-	  console.log(response.status);
       if (response.status === 200) {
         if (!signedIn) {
           this.setState({ name: "" });
