@@ -190,7 +190,7 @@ app.put("/api/users", async (req, res) => {
 		return res.status(422).send(error.details[0].message);
 	  }
 	  try {
-		const user = await User.findOne({ username: req.body.username });
+		let user = await User.findOne({ username: req.body.username });
 		if (!user) {
 			return res.status(404).send("User not found");
 		}
