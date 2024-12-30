@@ -193,14 +193,17 @@ class App extends Component {
             confirmed_user={this.state.confirmed_user}
             name_signUp={this.state.name_signUp}
           />
-          <Suggest
+		  {(this.state.signedIn) ?
+		  <Suggest
             name={this.state.name}
             favoriteBook={this.state.favoriteBook}
             onInputChange={this.handleInputChange}
             onSubmit={this.handleSubmit}
             result={this.state.result}
             btn={this.state.btn}
-          />
+          /> : <div className="d-flex justify-content-center">
+		  <h1>
+			<span className="badge bg-danger">Please sign in first</span></h1></div>}
           <Others favorites={this.state.favorites} />
         </div>
       </div>
