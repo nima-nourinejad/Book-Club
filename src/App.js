@@ -126,6 +126,16 @@ class App extends Component {
     }
   };
 
+  handle_SignOut=()=>{
+	this.setState({
+		signedIn: false,
+		confirmed_user: "",
+		user_signIn: "",
+		user_signUp: "",
+		name_signUp: "",
+	});
+  }
+
   handleSubmit = async () => {
     const { name, favoriteBook, btn, signedIn, user_signIn } = this.state;
     if (!btn || !name || !favoriteBook || !signedIn) {
@@ -176,6 +186,7 @@ class App extends Component {
             onInputChange={this.handleInputChange}
             onSignIn={this.handle_SignIn}
             onSignUp={this.handle_SignUp}
+			onSignOut={this.handle_SignOut}
             signIn_result={this.state.signIn_result}
             signUp_result={this.state.signUp_result}
             signedIn={this.state.signedIn}

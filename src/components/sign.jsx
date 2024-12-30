@@ -28,6 +28,7 @@ class Sign extends Component {
     onInputChange,
     onSignIn,
     onSignUp,
+	onSignOut,
     signedIn,
     confirmed_user,
     name_signUp
@@ -37,6 +38,12 @@ class Sign extends Component {
         <div className="container-fluid d-flex  justify-content-center" id="sign">
 		  <div className="card text-bg-success mb-3">
 			<div className="card-header">Welcome {confirmed_user}</div>
+			<button
+                  className="btn btn-danger"
+                  onClick={onSignOut}
+                >
+                  Sign Out
+                </button>
 			</div>
         </div>
       );
@@ -130,6 +137,7 @@ class Sign extends Component {
       onInputChange,
       onSignIn,
       onSignUp,
+	  onSignOut,
       signedIn,
       confirmed_user,
       name_signUp,
@@ -142,6 +150,7 @@ class Sign extends Component {
       onInputChange,
       onSignIn,
       onSignUp,
+	  onSignOut,
       signedIn,
       confirmed_user,
       name_signUp
