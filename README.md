@@ -2,6 +2,7 @@
 
 **Book Haven** is a web application where book lovers can share and explore their favorite book recommendations. Users can submit their favorite books along with their names, and browse through suggestions from others. It's a platform designed to help readers discover new books, exchange ideas, and share what inspires them.
 
+
 ---
 
 ## Screenshots
