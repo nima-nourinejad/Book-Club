@@ -43,7 +43,6 @@ app.use(cors());
 //   }
 // }
 
-
 async function connectToDatabase() {
   try {
     const connectionString = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_CLUSTER}`;
@@ -59,16 +58,15 @@ async function connectToDatabase() {
   }
 }
 
-
 const schema = new mongoose.Schema({
   name: { type: String, required: true },
   book: { type: String, required: true },
 });
 
 const schema_user = new mongoose.Schema({
-	  name: { type: String, required: true },
-	  username: { type: String, required: true },
-	  books: { type: Array, default: [] },
+  name: { type: String, required: true },
+  username: { type: String, required: true },
+  books: { type: Array, default: [] },
 });
 
 const Favorite = mongoose.model("Favorite", schema);
@@ -89,15 +87,15 @@ async function createFavorite(newName, newBook) {
 }
 
 async function createUser(newName, newUsername) {
-	  try {
-	const document = new User({
-	  name: newName,
-	  username: newUsername,
-	});
-	const savedDocument = await document.save();
-	return savedDocument;
+  try {
+    const document = new User({
+      name: newName,
+      username: newUsername,
+    });
+    const savedDocument = await document.save();
+    return savedDocument;
   } catch (err) {
-	console.error("Error creating user: ", err.message);
+    console.error("Error creating user: ", err.message);
   }
 }
 
@@ -120,26 +118,26 @@ function validateFavorite(body) {
 }
 
 function validateUser(body) {
-	  const schema = Joi.object({
-		name: Joi.string().required(),
-		username: Joi.string().required(),
-	  });
-	  return schema.validate(body);
+  const schema = Joi.object({
+    name: Joi.string().required(),
+    username: Joi.string().required(),
+  });
+  return schema.validate(body);
 }
 
 function validateBook(body) {
-	  const schema = Joi.object({
-		username: Joi.string().required(),
-		book: Joi.string().required(),
-	  });
-	  return schema.validate(body);
+  const schema = Joi.object({
+    username: Joi.string().required(),
+    book: Joi.string().required(),
+  });
+  return schema.validate(body);
 }
 
 function validateUserName(body) {
-	  const schema = Joi.object({
-		username: Joi.string().required(),
-	  });
-	  return schema.validate(body);
+  const schema = Joi.object({
+    username: Joi.string().required(),
+  });
+  return schema.validate(body);
 }
 
 const PORT = process.env.PORT || 5000;
@@ -168,84 +166,179 @@ app.post("/api/favorites", async (req, res) => {
 });
 
 app.post("/api/users", async (req, res) => {
-	  const { error } = validateUser(req.body);
-	  if (error) {
-		return res.status(422).send(error.details[0].message);
-	  }
-	  try {
-		const oldUser = await User.findOne({ username: req.body.username });
-		if (oldUser) {
-			return res.status(400).send("Username already exists");
-		}
-		const user = await createUser(req.body.name, req.body.username);
-		res.status(201).json(user);
-	  } catch (err) {
-		res.status(500).send(err.message);
-	  }
+  const { error } = validateUser(req.body);
+  if (error) {
+    return res.status(422).send(error.details[0].message);
+  }
+  try {
+    const oldUser = await User.findOne({ username: req.body.username });
+    if (oldUser) {
+      return res.status(400).send("Username already exists");
+    }
+    const user = await createUser(req.body.name, req.body.username);
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.put("/api/users", async (req, res) => {
-	  const { error } = validateBook(req.body);
-	  if (error) {
-		return res.status(422).send(error.details[0].message);
-	  }
-	  try {
-		let user = await User.findOne({ username: req.body.username });
-		if (!user) {
-			return res.status(404).send("User not found");
-		}
-		await User.updateOne({
-			username: req.body.username,
-		},
-		{
-			$push: { books: req.body.book },
-		});
-		let userModified = await User.findOne({ username: req.body.username });
-		res.status(200).json(userModified);
-	  }
-	  catch (err) {
-		res.status(500).send(err.message);
-	  }
+  const { error } = validateBook(req.body);
+  if (error) {
+    return res.status(422).send(error.details[0].message);
+  }
+  try {
+    let user = await User.findOne({ username: req.body.username });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    await User.updateOne(
+      {
+        username: req.body.username,
+      },
+      {
+        $push: { books: req.body.book },
+      }
+    );
+    let userModified = await User.findOne({ username: req.body.username });
+    res.status(200).json(userModified);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get(`/api/users/:username`, async (req, res) => {
-	const { username } = req.params;
-	if (!username) {
-		return res.status(422).send("No username provided");
-	}
-	try {
-		const user = await User.findOne({username});
-		if (!user) {
-			return res.status(404).send("User not found");
-		}
-		res.status(200).json(user);
-	} catch (err) {
-		res.status(500).send(err.message);
-	}
+  const { username } = req.params;
+  if (!username) {
+    return res.status(422).send("No username provided");
+  }
+  try {
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
 app.get("/api/users", async (req, res) => {
-	try {
-		const books = [];
-		const users = await User.find();
-		users.forEach((user) => {
-			
-			if (user.books.length > 0) {
-				let member = {
-					name: user.name,
-					book: user.books.toString(),
-					_id: user._id,
-				};
-				books.push(member);
-		}
-		});
-		res.status(200).json(books);
-	} catch (err) {
-		res.status(500).send(err.message);
-	}
+  try {
+    const books = [];
+    const users = await User.find();
+    users.forEach((user) => {
+      if (user.books.length > 0) {
+        let member = {
+          name: user.name,
+          book: user.books.toString(),
+          _id: user._id,
+        };
+        books.push(member);
+      }
+    });
+    res.status(200).json(books);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
 });
 
+//////////////////////////
+const book_schema = new mongoose.Schema({
+  title: { type: String, required: true },
+  genre: { type: Array, default: [] },
+});
 
+const user_schema = new mongoose.Schema({
+  username: { type: String, required: true },
+  name: { type: String, required: true },
+  books: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book", default: [] }],
+});
+
+const Book_model = mongoose.model("Book_collection", book_schema);
+const User_model = mongoose.model("User_collection", user_schema);
+
+async function createBook_document(title, genre) {
+  try {
+    const document = new Book_model({
+      title,
+      genre,
+    });
+    const savedDocument = await document.save();
+    return savedDocument;
+  } catch (err) {
+    console.error("Error creating book document: ", err.message);
+  }
+}
+
+async function createUser_document(username, name) {
+  try {
+    const document = new User_model({
+      username,
+      name,
+    });
+    const savedDocument = await document.save();
+    return savedDocument;
+  } catch (err) {
+    console.error("Error creating user document: ", err.message);
+  }
+}
+
+async function addBook_toUser(username, book_id) {
+  try {
+    const user = await User_model.findOne({ username });
+    if (!user) {
+      return null;
+    }
+    await User_model.updateOne(
+      {
+        username,
+      },
+      {
+        $push: { books: book_id },
+      }
+    );
+    const userModified = await User_model.findOne({ username });
+    return userModified;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function removeBook_fromUser(username, book_id) {
+  try {
+    const user = await User_model.findOne({ username });
+    if (!user) {
+      return null;
+    }
+    await User_model.updateOne(
+      {
+        username,
+      },
+      {
+        $pull: { books: book_id },
+      }
+    );
+    const userModified = await User_model.findOne({ username });
+    return userModified;
+  } catch (err) {
+    return null;
+  }
+}
+
+async function getBooks(username) {
+  try {
+    const user = await User_model.findOne({ username }).populate("books");
+    if (!user) {
+      return null;
+    }
+    return user.books;
+  } catch (err) {
+    return null;
+  }
+}
+
+////////////////
 async function clearFavorites() {
   try {
     const db = mongoose.connection.db;
@@ -255,11 +348,11 @@ async function clearFavorites() {
   }
 }
 async function clearUsers() {
-	  try {
-	const db = mongoose.connection.db;
-	await db.collection("users").deleteMany({});
+  try {
+    const db = mongoose.connection.db;
+    await db.collection("users").deleteMany({});
   } catch (err) {
-	console.error(err);
+    console.error(err);
   }
 }
 
@@ -268,8 +361,8 @@ async function startServer() {
   app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`);
   });
-//   clearFavorites();
-//   clearUsers();
+  //   clearFavorites();
+  //   clearUsers();
 }
 
 startServer();
