@@ -406,7 +406,7 @@ app.put("/api/new", async (req, res) => {
 
 app.get("/api/new", async (req, res) => {
 	  try {
-	const users = await User_model.find();
+	const users = await User_model.find().populate("books");
 	res.status(200).json(users);
   } catch (err) {
 	res.status(500).send(err.message);

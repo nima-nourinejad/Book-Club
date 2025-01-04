@@ -5,6 +5,7 @@ import Top from "./components/top";
 import Suggest from "./components/suggest";
 import Others from "./components/others";
 import Sign from "./components/sign";
+import Allusers from "./components/allusers";
 import axios from "axios";
 
 class App extends Component {
@@ -21,6 +22,7 @@ class App extends Component {
     signIn_result: 0,
     signUp_result: 0,
     name_signUp: "",
+	allUsers: []
   };
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
@@ -133,7 +135,18 @@ class App extends Component {
     } catch (error) {
       console.error(error);
     }
-  };
+	try {
+		const response = await axios.get(
+			`${this.backEndUrl}/${this.apiNew}`
+		);
+		if (response.status === 200) {
+			this.setState({ allUsers: response.data });
+		}
+	}
+	catch (error) {
+		console.error(error);
+  };}
+
 
   handle_SignOut = () => {
     this.setState({
@@ -223,6 +236,7 @@ class App extends Component {
             </div>
           )}
           <Others favorites={this.state.favorites} />
+		  <Allusers users={this.state.allUsers} />
         </div>
       </div>
     );
