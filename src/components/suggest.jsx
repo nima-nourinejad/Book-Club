@@ -3,7 +3,7 @@ import React, { Component } from "react";
 class Suggest extends Component {
   handleNotification = (result) => {
     if (!result) return "";
-    if (result == 1)
+    if (result === 1)
       return (
         <p>
           <span className="badge bg-success m-2">Successfully Submitted</span>

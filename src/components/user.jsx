@@ -9,7 +9,7 @@ class User extends Component {
 			<div className="card-body">
 			  <h5 className="card-title">{user.name}</h5>
 			  {user.books.map((book) => (
-				<p key={book._id} className="card-text">{book}</p>
+				<p key={book._id} className="card-text">{book.title}</p>
 			  ))}
 			</div>
 		  </div>
