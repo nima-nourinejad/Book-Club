@@ -404,6 +404,10 @@ app.put("/api/new", async (req, res) => {
   }
 });
 
+app.get('/api/new', async (req, res) => {
+	res.send('General endpoint for /api/new');
+  });
+
 app.get(`api/new/:username`, async (req, res) => {
   const { username } = req.params;
   if (!username) {
