@@ -410,7 +410,11 @@ app.get('api/new/:username', async (req, res) => {
 	return res.status(422).send("No username provided");
   }
   try {
-	const user = await getFullUser(username);
+	// const user = await getFullUser(username);
+	// if (!user) {
+	//   return res.status(404).send("User not found");
+	// }
+	const user = await User_model.findOne({ username }).populate("books");
 	if (!user) {
 	  return res.status(404).send("User not found");
 	}

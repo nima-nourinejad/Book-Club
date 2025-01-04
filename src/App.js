@@ -27,6 +27,7 @@ class App extends Component {
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
   apiUserEndpoint = "api/users";
+  apiNew = "api/new";
   handleInputChange = (key, value) => {
     if (key === "name" && this.state.signedIn) {
       return;
@@ -39,8 +40,15 @@ class App extends Component {
       return;
     }
     try {
-      const response = await axios.post(
-        `${this.backEndUrl}/${this.apiUserEndpoint}`,
+    //   const response = await axios.post(
+    //     `${this.backEndUrl}/${this.apiUserEndpoint}`,
+    //     {
+    //       name: name_signUp,
+    //       username: user_signUp,
+    //     }
+    //   );
+	  const response = await axios.post(
+        `${this.backEndUrl}/${this.apiNew}`,
         {
           name: name_signUp,
           username: user_signUp,
@@ -70,8 +78,11 @@ class App extends Component {
       return;
     }
     try {
-      const response = await axios.get(
-        `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
+    //   const response = await axios.get(
+    //     `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
+    //   );
+	  const response = await axios.get(
+        `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
       );
       if (response.status === 200) {
         const name = response.data.name;
