@@ -253,9 +253,14 @@ const Book_model = mongoose.model("Book_collection", book_schema);
 const user_schema = new mongoose.Schema({
   username: { type: String, required: true },
   name: { type: String, required: true },
-  books: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book_collection", default: [] }],
+  books: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Book_collection",
+      default: [],
+    },
+  ],
 });
-
 
 const User_model = mongoose.model("User_collection", user_schema);
 
@@ -320,7 +325,7 @@ async function removeBook_fromUser(username, book_id) {
         $pull: { books: book_id },
       }
     );
-	await Book_model.deleteOne({ _id: book_id });
+    await Book_model.deleteOne({ _id: book_id });
     const userModified = await User_model.findOne({ username });
     return userModified;
   } catch (err) {
@@ -342,16 +347,62 @@ async function getBooks(username) {
 
 async function getFullUser(username) {
   try {
-	const user = await User_model.findOne({ username }).populate("books");
-	if (!user) {
-	  return null;
-	}
-	return user;
+    const user = await User_model.findOne({ username }).populate("books");
+    if (!user) {
+      return null;
+    }
+    return user;
   } catch (err) {
-	return null;
+    return null;
   }
 }
 
+app.post("/api/new", async (req, res) => {
+  const { error } = validateUser(req.body);
+  if (error) {
+    return res.status(422).send(error.details[0].message);
+  }
+  try {
+    const oldUser = await User_model.findOne({ username: req.body.username });
+    if (oldUser) {
+      return res.status(400).send("Username already exists");
+    }
+    const user = await createUser_document(req.body.username, req.body.name);
+    res.status(201).json(user);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
+
+app.put("/api/new", async (req, res) => {
+  const { error } = validateBook(req.body);
+  if (error) {
+    return res.status(422).send(error.details[0].message);
+  }
+  try {
+    const oldUser = await User_model.findOne({ username: req.body.username });
+    if (!oldUser) {
+      return res.status(404).send("User not found");
+    }
+    const book = await createBook_document(req.body.book, []);
+    if (!book) {
+      return res.status(500).send("Error creating book");
+    }
+    const user = await addBook_toUser(req.body.username, book._id);
+    if (!user) {
+      Book_model.deleteOne({ _id: book._id });
+      return res.status(500).send("Error adding book to user");
+    }
+    const userModified = await getFullUser(req.body.username);
+    if (!userModified) {
+      Book_model.deleteOne({ _id: book._id });
+      return res.status(500).send("Error getting user");
+    }
+    res.status(200).json(userModified);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
 
 ////////////////
 async function clearFavorites() {
