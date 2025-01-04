@@ -405,17 +405,21 @@ app.put("/api/new", async (req, res) => {
 });
 
 app.get("/api/new/:username", async (req, res) => {
-	// res.status(200).send("Hello");
- 
-  if (!username) {
-    return res.status(422).send("No username provided");
-  }
-  const user = await User_model.findOne({ username: req.params.username }).populate("books");
-  if (!user) {
-    return res.status(404).send("User not found");
-  }
-  res.status(200).json(user);
-});
+	console.log("Username from route:", req.params.username);  // Log the username
+	const username = req.params.username;
+  
+	if (!username) {
+	  return res.status(422).send("No username provided");
+	}
+  
+	const user = await User_model.findOne({ username: req.params.username }).populate("books");
+	if (!user) {
+	  return res.status(404).send("User not found");
+	}
+  
+	res.status(200).json(user);
+  });
+  
 
 ////////////////
 async function clearFavorites() {
