@@ -404,32 +404,17 @@ app.put("/api/new", async (req, res) => {
   }
 });
 
-app.get('/api/new', async (req, res) => {
-	res.send('General endpoint for /api/new');
-  });
-
-app.get(`api/new/:username`, async (req, res) => {
+app.get("/api/new/:username", async (req, res) => {
   const { username } = req.params;
   if (!username) {
-	return res.status(422).send("No username provided");
+    return res.status(422).send("No username provided");
   }
-  try {
-	// const user = await getFullUser(username);
-	// if (!user) {
-	//   return res.status(404).send("User not found");
-	// }
-	// const user = await User_model.findOne({ username }).populate("books");
-	// if (!user) {
-	//   return res.status(404).send("User not found");
-	// }
-	const user = await User_model.findOne({ username });
-	if (!user) {
-	  return res.status(404).send("User not found");
-	}
-	res.status(200).json(user);
-  } catch (err) {
-	res.status(500).send(err.message);
-  }});
+  const user = await User_model.findOne({ username }).populate("books");
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
+  res.status(200).json(user);
+});
 
 ////////////////
 async function clearFavorites() {
