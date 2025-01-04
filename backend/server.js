@@ -404,7 +404,7 @@ app.put("/api/new", async (req, res) => {
   }
 });
 
-app.get('api/new/:username', async (req, res) => {
+app.get(`api/new/:username`, async (req, res) => {
   const { username } = req.params;
   if (!username) {
 	return res.status(422).send("No username provided");
