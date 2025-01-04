@@ -319,6 +319,7 @@ async function removeBook_fromUser(username, book_id) {
         $pull: { books: book_id },
       }
     );
+	await Book_model.deleteOne({ _id: book_id });
     const userModified = await User_model.findOne({ username });
     return userModified;
   } catch (err) {
@@ -337,6 +338,19 @@ async function getBooks(username) {
     return null;
   }
 }
+
+async function getFullUser(username) {
+  try {
+	const user = await User_model.findOne({ username }).populate("books");
+	if (!user) {
+	  return null;
+	}
+	return user;
+  } catch (err) {
+	return null;
+  }
+}
+
 
 ////////////////
 async function clearFavorites() {
