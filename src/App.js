@@ -7,8 +7,6 @@ import Others from "./components/others";
 import Sign from "./components/sign";
 import axios from "axios";
 
-
-
 class App extends Component {
   state = {
     name: "",
@@ -40,20 +38,17 @@ class App extends Component {
       return;
     }
     try {
-    //   const response = await axios.post(
-    //     `${this.backEndUrl}/${this.apiUserEndpoint}`,
-    //     {
-    //       name: name_signUp,
-    //       username: user_signUp,
-    //     }
-    //   );
-	  const response = await axios.post(
-        `${this.backEndUrl}/${this.apiNew}`,
-        {
-          name: name_signUp,
-          username: user_signUp,
-        }
-      );
+      //   const response = await axios.post(
+      //     `${this.backEndUrl}/${this.apiUserEndpoint}`,
+      //     {
+      //       name: name_signUp,
+      //       username: user_signUp,
+      //     }
+      //   );
+      const response = await axios.post(`${this.backEndUrl}/${this.apiNew}`, {
+        name: name_signUp,
+        username: user_signUp,
+      });
       if (response.status === 201) {
         this.setState({ signUp_result: 1, name_signUp: "", user_signUp: "" });
         setTimeout(() => {
@@ -78,11 +73,11 @@ class App extends Component {
       return;
     }
     try {
-    //   const response = await axios.get(
-    //     `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
-    //   );
-	console.log(`${this.backEndUrl}/${this.apiNew}/${user_signIn}`);
-	  const response = await axios.get(
+      //   const response = await axios.get(
+      //     `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
+      //   );
+      console.log(`${this.backEndUrl}/${this.apiNew}/${user_signIn}`);
+      const response = await axios.get(
         `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
       );
       if (response.status === 200) {
@@ -92,7 +87,7 @@ class App extends Component {
           confirmed_user: name,
           signedIn: true,
           name: name,
-		  user_signIn: user_signIn,
+          user_signIn: user_signIn,
         });
         setTimeout(() => {
           this.setState({ signIn_result: 0 });
@@ -133,22 +128,22 @@ class App extends Component {
       if (response.status === 200) {
         // const newFavorites = this.state.favorites.concat(response.data);
         // this.setState({ favorites: newFavorites });
-		this.setState({ favorites: response.data });
+        this.setState({ favorites: response.data });
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  handle_SignOut=()=>{
-	this.setState({
-		signedIn: false,
-		confirmed_user: "",
-		user_signIn: "",
-		user_signUp: "",
-		name_signUp: "",
-	});
-  }
+  handle_SignOut = () => {
+    this.setState({
+      signedIn: false,
+      confirmed_user: "",
+      user_signIn: "",
+      user_signUp: "",
+      name_signUp: "",
+    });
+  };
 
   handleSubmit = async () => {
     const { name, favoriteBook, btn, signedIn, user_signIn } = this.state;
@@ -157,13 +152,17 @@ class App extends Component {
     }
     try {
       this.setState({ btn: false });
-      const response = await axios.put(
-        `${this.backEndUrl}/${this.apiUserEndpoint}`,
-        {
-          username: user_signIn,
-          book: favoriteBook,
-        }
-      );
+      //   const response = await axios.put(
+      //     `${this.backEndUrl}/${this.apiUserEndpoint}`,
+      //     {
+      //       username: user_signIn,
+      //       book: favoriteBook,
+      //     }
+      //   );
+      const response = await axios.put(`${this.backEndUrl}/${this.apiNew}`, {
+        username: user_signIn,
+        book: favoriteBook,
+      });
       if (response.status === 200) {
         if (!signedIn) {
           this.setState({ name: "" });
@@ -200,24 +199,29 @@ class App extends Component {
             onInputChange={this.handleInputChange}
             onSignIn={this.handle_SignIn}
             onSignUp={this.handle_SignUp}
-			onSignOut={this.handle_SignOut}
+            onSignOut={this.handle_SignOut}
             signIn_result={this.state.signIn_result}
             signUp_result={this.state.signUp_result}
             signedIn={this.state.signedIn}
             confirmed_user={this.state.confirmed_user}
             name_signUp={this.state.name_signUp}
           />
-		  {(this.state.signedIn) ?
-		  <Suggest
-            name={this.state.name}
-            favoriteBook={this.state.favoriteBook}
-            onInputChange={this.handleInputChange}
-            onSubmit={this.handleSubmit}
-            result={this.state.result}
-            btn={this.state.btn}
-          /> : <div className="d-flex justify-content-center">
-		  <h1>
-			<span className="badge bg-danger">Please sign in first</span></h1></div>}
+          {this.state.signedIn ? (
+            <Suggest
+              name={this.state.name}
+              favoriteBook={this.state.favoriteBook}
+              onInputChange={this.handleInputChange}
+              onSubmit={this.handleSubmit}
+              result={this.state.result}
+              btn={this.state.btn}
+            />
+          ) : (
+            <div className="d-flex justify-content-center">
+              <h1>
+                <span className="badge bg-danger">Please sign in first</span>
+              </h1>
+            </div>
+          )}
           <Others favorites={this.state.favorites} />
         </div>
       </div>
