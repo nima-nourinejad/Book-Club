@@ -248,14 +248,15 @@ const book_schema = new mongoose.Schema({
   title: { type: String, required: true },
   genre: { type: Array, default: [] },
 });
+const Book_model = mongoose.model("Book_collection", book_schema);
 
 const user_schema = new mongoose.Schema({
   username: { type: String, required: true },
   name: { type: String, required: true },
-  books: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book", default: [] }],
+  books: [{ type: mongoose.Schema.Types.ObjectId, ref: "Book_collection", default: [] }],
 });
 
-const Book_model = mongoose.model("Book_collection", book_schema);
+
 const User_model = mongoose.model("User_collection", user_schema);
 
 async function createBook_document(title, genre) {
