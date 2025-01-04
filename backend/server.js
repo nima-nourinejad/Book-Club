@@ -404,6 +404,21 @@ app.put("/api/new", async (req, res) => {
   }
 });
 
+app.get('api/new/:username', async (req, res) => {
+  const { username } = req.params;
+  if (!username) {
+	return res.status(422).send("No username provided");
+  }
+  try {
+	const user = await getFullUser(username);
+	if (!user) {
+	  return res.status(404).send("User not found");
+	}
+	res.status(200).json(user);
+  } catch (err) {
+	res.status(500).send(err.message);
+  }});
+
 ////////////////
 async function clearFavorites() {
   try {
