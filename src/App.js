@@ -81,6 +81,7 @@ class App extends Component {
     //   const response = await axios.get(
     //     `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
     //   );
+	console.log(`${this.backEndUrl}/${this.apiNew}/${user_signIn}`);
 	  const response = await axios.get(
         `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
       );
