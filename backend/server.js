@@ -404,8 +404,16 @@ app.put("/api/new", async (req, res) => {
   }
 });
 
+app.get("/api/new", async (req, res) => {
+	  try {
+	const users = await User_model.find();
+	res.status(200).json(users);
+  } catch (err) {
+	res.status(500).send(err.message);
+  }
+});
+
 app.get("/api/new/:username", async (req, res) => {
-	console.log("Username from route:", req.params.username);  // Log the username
 	const username = req.params.username;
   
 	if (!username) {
