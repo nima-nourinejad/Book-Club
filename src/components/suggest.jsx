@@ -22,60 +22,41 @@ class Suggest extends Component {
     return "btn btn-warning mx-auto d-block disabled";
   };
   btnText = (btn) => {
-	if (btn) {
-	  return "Submit";
-	}
-	return "Wait";
-  }
+    if (btn) {
+      return "Suggest";
+    }
+    return "Wait";
+  };
 
   render() {
-    const { name, favoriteBook, onInputChange, onSubmit, result, btn } =
-      this.props;
+    const { favoriteBook, onInputChange, onSubmit, result, btn } = this.props;
 
     return (
-      <div className="row justify-content-center">
-        <div className="col-12 col-md-6 col-lg-4 mb-4">
-          <div className="card shadow-sm">
-            <div className="card-body" id="suggestForm">
-              <div className="mb-3">
-                <label htmlFor="name" className="form-label">
-                  Name
-                </label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="name"
-                  value={name}
-                  onChange={(e) => onInputChange("name", e.target.value)}
-                  placeholder="Enter your name"
-                />
-              </div>
-
-              <div className="mb-3">
-                <label htmlFor="favoriteBook" className="form-label">
-                  Favorite Book
-                </label>
-                <textarea
-                  className="form-control"
-                  id="favoriteBook"
-                  rows="3"
-                  value={favoriteBook}
-                  onChange={(e) =>
-                    onInputChange("favoriteBook", e.target.value)
-                  }
-                  placeholder="Share your favorite book"
-                />
-              </div>
-
-              <button
-                type="submit"
-                className={this.btnClass(btn)}
-                onClick={onSubmit}
-              >
-                {this.btnText(btn)}
-              </button>
-              <div>{this.handleNotification(result)}</div>
+      <div className="card shadow-sm m-2">
+        <div className="card-body" id="suggestForm">
+          <div className="mb-3">
+            <div className="mb-3">
+              <label htmlFor="favoriteBook" className="form-label">
+                Favorite Book
+              </label>
+              <textarea
+                className="form-control"
+                id="favoriteBook"
+                rows="3"
+                value={favoriteBook}
+                onChange={(e) => onInputChange("favoriteBook", e.target.value)}
+                placeholder="Share your favorite book"
+              />
             </div>
+
+            <button
+              type="submit"
+              className={this.btnClass(btn)}
+              onClick={onSubmit}
+            >
+              {this.btnText(btn)}
+            </button>
+            <div>{this.handleNotification(result)}</div>
           </div>
         </div>
       </div>

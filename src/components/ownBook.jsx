@@ -1,33 +1,34 @@
 import React, { Component } from "react";
 
 class OwnBook extends Component {
-  state = {};
+  printFavorite = (user, onDelete) => {
+	if (user.books.length === 0) {
+	  return <p>No suggestions found.</p>;
+	}
+	return user.books.map((book) => (
+		<div className="card shadow-sm" key={book._id}>
+		  <div className="card-body">
+			<p className="card-title">{book.title}</p>
+			<button
+			  className="btn btn-outline-danger"
+			  onClick={() => onDelete(book._id)}
+			>
+			  Delete
+			</button>
+		  </div>
+		</div>
+	  ));
+  }
   render() {
     const { user = { name: "", books: [] }, onDelete} = this.props;
-	// const onDel  = this.props.onDel;
     return (
-      <div className="row justify-content-center">
-        <div className="col-12 col-md-6 col-lg-4 mb-4">
-          <div className="card shadow-sm">
+          <div className="card shadow-sm m-2">
             <div className="card-body">
               <h5 className="card-title">Your Suggestions</h5>
-              {user.books.map((book) => (
-                <div className="card shadow-sm" key={book._id}>
-                  <div className="card-body">
-                    <h5 className="card-title">{book.title}</h5>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => onDelete(book._id)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                </div>
-              ))}
+			  {this.printFavorite(user, onDelete)}
             </div>
           </div>
-        </div>
-      </div>
+
     );
   }
 }

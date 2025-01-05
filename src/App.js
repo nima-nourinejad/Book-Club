@@ -3,7 +3,6 @@ import React, { Component } from "react";
 import NavBar from "./components/navBar";
 import Top from "./components/top";
 import Suggest from "./components/suggest";
-import Others from "./components/others";
 import Sign from "./components/sign";
 import Allusers from "./components/allusers";
 import OwnBook from "./components/ownBook";
@@ -30,23 +29,22 @@ class App extends Component {
   apiEndpoint = "api/favorites";
   apiUserEndpoint = "api/users";
   apiNew = "api/new";
-  fetchOwnBook = async ()=>{
-	const { signedIn, user_signIn } = this.state;
-	if (!signedIn) {
-	  return;
-	}
-	try {
-		const response = await axios.get(
-		  `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
-		);
-		if (response.status === 200) {
-		  this.setState({ fullSignedInUser: response.data });
-		}
-	  } catch (error) {
-		console.error(error);
-	  }
-
-  }
+  fetchOwnBook = async () => {
+    const { signedIn, user_signIn } = this.state;
+    if (!signedIn) {
+      return;
+    }
+    try {
+      const response = await axios.get(
+        `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
+      );
+      if (response.status === 200) {
+        this.setState({ fullSignedInUser: response.data });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   handleInputChange = (key, value) => {
     if (key === "name" && this.state.signedIn) {
       return;
@@ -65,13 +63,7 @@ class App extends Component {
       if (response.status === 200) {
         try {
           this.fetchFavorites();
-		  this.fetchOwnBook();
-        //   const response2 = await axios.get(
-        //     `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
-        //   );
-        //   if (response2.status === 200) {
-        //     this.setState({ fullSignedInUser: response2.data });
-        //   }
+          this.fetchOwnBook();
         } catch (error) {
           console.error(error);
         }
@@ -86,19 +78,13 @@ class App extends Component {
       return;
     }
     try {
-      //   const response = await axios.post(
-      //     `${this.backEndUrl}/${this.apiUserEndpoint}`,
-      //     {
-      //       name: name_signUp,
-      //       username: user_signUp,
-      //     }
-      //   );
       const response = await axios.post(`${this.backEndUrl}/${this.apiNew}`, {
         name: name_signUp,
         username: user_signUp,
       });
       if (response.status === 201) {
         this.setState({ signUp_result: 1, name_signUp: "", user_signUp: "" });
+		this.fetchFavorites();
         setTimeout(() => {
           this.setState({ signUp_result: 0 });
         }, 2000);
@@ -121,9 +107,6 @@ class App extends Component {
       return;
     }
     try {
-      //   const response = await axios.get(
-      //     `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
-      //   );
       const response = await axios.get(
         `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
       );
@@ -158,24 +141,11 @@ class App extends Component {
     this.fetchFavorites();
   }
   fetchFavorites = async () => {
-    // try {
-    //   const response = await axios.get(
-    //     `${this.backEndUrl}/${this.apiEndpoint}`
-    //   );
-
-    //   if (response.status === 200) {
-    //     this.setState({ favorites: response.data });
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    // }
     try {
       const response = await axios.get(
         `${this.backEndUrl}/${this.apiUserEndpoint}`
       );
       if (response.status === 200) {
-        // const newFavorites = this.state.favorites.concat(response.data);
-        // this.setState({ favorites: newFavorites });
         this.setState({ favorites: response.data });
       }
     } catch (error) {
@@ -209,13 +179,6 @@ class App extends Component {
     }
     try {
       this.setState({ btn: false });
-      //   const response = await axios.put(
-      //     `${this.backEndUrl}/${this.apiUserEndpoint}`,
-      //     {
-      //       username: user_signIn,
-      //       book: favoriteBook,
-      //     }
-      //   );
       const response = await axios.put(`${this.backEndUrl}/${this.apiNew}`, {
         username: user_signIn,
         book: favoriteBook,
@@ -232,7 +195,7 @@ class App extends Component {
           this.setState({ result: 0, btn: true });
         }, 2000);
         this.fetchFavorites();
-		this.fetchOwnBook();
+        this.fetchOwnBook();
       }
     } catch (error) {
       this.setState({ result: 2 });
@@ -265,17 +228,27 @@ class App extends Component {
             name_signUp={this.state.name_signUp}
           />
           {this.state.signedIn ? (
-			<div>
-				<Suggest
-				name={this.state.name}
-				favoriteBook={this.state.favoriteBook}
-				onInputChange={this.handleInputChange}
-				onSubmit={this.handleSubmit}
-				result={this.state.result}
-				btn={this.state.btn}
-				/>
-				<OwnBook user={this.state.fullSignedInUser} onDelete={this.handle_delete} />
-			</div>
+            <div className="container-fluid">
+
+                <div className="row align-items-center">
+                  <div className="col-12 col-md-6 d-flex justify-content-center">
+                    <Suggest
+                      name={this.state.name}
+                      favoriteBook={this.state.favoriteBook}
+                      onInputChange={this.handleInputChange}
+                      onSubmit={this.handleSubmit}
+                      result={this.state.result}
+                      btn={this.state.btn}
+                    />
+                  </div>
+                  <div className="col-12 col-md-6 d-flex justify-content-center">
+                    <OwnBook
+                      user={this.state.fullSignedInUser}
+                      onDelete={this.handle_delete}
+                    />
+                  </div>
+                </div>
+              </div>
 
           ) : (
             <div className="d-flex justify-content-center">
@@ -284,8 +257,9 @@ class App extends Component {
               </h1>
             </div>
           )}
-          <Others favorites={this.state.favorites} />
-          <Allusers users={this.state.allUsers}/>
+          <div>
+            <Allusers users={this.state.allUsers} />
+          </div>
         </div>
       </div>
     );
