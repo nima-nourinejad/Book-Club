@@ -438,9 +438,9 @@ app.get("/api/new/:username", async (req, res) => {
 
 app.delete("/api/new/:username/:book_id", async (req, res) => {
 //   const { error } = validateBook(req.params);
-  if (error) {
-	return res.status(422).send(error.details[0].message);
-  }
+//   if (error) {
+// 	return res.status(422).send(error.details[0].message);
+//   }
   try {
 	const user = await removeBook_fromUser(req.params.username, req.params.book_id);
 	if (!user) {
