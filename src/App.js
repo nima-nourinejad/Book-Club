@@ -30,6 +30,23 @@ class App extends Component {
   apiEndpoint = "api/favorites";
   apiUserEndpoint = "api/users";
   apiNew = "api/new";
+  fetchOwnBook = async ()=>{
+	const { signedIn, user_signIn } = this.state;
+	if (!signedIn) {
+	  return;
+	}
+	try {
+		const response = await axios.get(
+		  `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
+		);
+		if (response.status === 200) {
+		  this.setState({ fullSignedInUser: response.data });
+		}
+	  } catch (error) {
+		console.error(error);
+	  }
+
+  }
   handleInputChange = (key, value) => {
     if (key === "name" && this.state.signedIn) {
       return;
@@ -48,12 +65,13 @@ class App extends Component {
       if (response.status === 200) {
         try {
           this.fetchFavorites();
-          const response2 = await axios.get(
-            `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
-          );
-          if (response2.status === 200) {
-            this.setState({ fullSignedInUser: response2.data });
-          }
+		  this.fetchOwnBook();
+        //   const response2 = await axios.get(
+        //     `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
+        //   );
+        //   if (response2.status === 200) {
+        //     this.setState({ fullSignedInUser: response2.data });
+        //   }
         } catch (error) {
           console.error(error);
         }
@@ -214,6 +232,7 @@ class App extends Component {
           this.setState({ result: 0, btn: true });
         }, 2000);
         this.fetchFavorites();
+		this.fetchOwnBook();
       }
     } catch (error) {
       this.setState({ result: 2 });
@@ -246,23 +265,24 @@ class App extends Component {
             name_signUp={this.state.name_signUp}
           />
           {this.state.signedIn ? (
-            <Suggest
-              name={this.state.name}
-              favoriteBook={this.state.favoriteBook}
-              onInputChange={this.handleInputChange}
-              onSubmit={this.handleSubmit}
-              result={this.state.result}
-              btn={this.state.btn}
-            />
+			<div>
+				<Suggest
+				name={this.state.name}
+				favoriteBook={this.state.favoriteBook}
+				onInputChange={this.handleInputChange}
+				onSubmit={this.handleSubmit}
+				result={this.state.result}
+				btn={this.state.btn}
+				/>
+				<OwnBook user={this.state.fullSignedInUser} onDelete={this.handle_delete} />
+			</div>
+
           ) : (
             <div className="d-flex justify-content-center">
               <h1>
                 <span className="badge bg-danger">Please sign in first</span>
               </h1>
             </div>
-          )}
-          {this.state.signedIn && (
-            <OwnBook user={this.state.fullSignedInUser} onDelete={this.handle_delete} />
           )}
           <Others favorites={this.state.favorites} />
           <Allusers users={this.state.allUsers}/>
