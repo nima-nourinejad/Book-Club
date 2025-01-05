@@ -11,19 +11,12 @@ class OwnBook extends Component {
             <div className="card-body">
               <h5 className="card-title">Your Suggestions</h5>
               {user.books.map((book) => (
-				<div key={book._id} className="m-2">
-                <button
-                  
-                  type="button"
-                  className="btn btn-primary position-relative"
-                >
-                  {book.title}
-                  <span className="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle">
-					<button type="button" className="btn-close" aria-label="Close"></button>
-                  </span>
-                </button>
-				<br />
-				</div>
+                <div className="card shadow-sm">
+                  <div className="card-body">
+                    <h5 className="card-title">{book.title}</h5>
+					<button className="btn btn-danger">Delete</button>
+                  </div>
+                </div>
               ))}
             </div>
           </div>
