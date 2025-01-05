@@ -23,8 +23,8 @@ class App extends Component {
     signIn_result: 0,
     signUp_result: 0,
     name_signUp: "",
-	allUsers: [],
-	fullSignedInUser: {}
+    allUsers: [],
+    fullSignedInUser: {},
   };
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
@@ -35,6 +35,32 @@ class App extends Component {
       return;
     }
     this.setState({ [key]: value });
+  };
+  handle_delete = async (book_id) => {
+    const { signedIn, user_signIn } = this.state;
+    if (!signedIn) {
+      return;
+    }
+    try {
+      const response = await axios.delete(
+        `${this.backEndUrl}/${this.apiNew}/${user_signIn}/${book_id}`
+      );
+      if (response.status === 200) {
+        try {
+          this.fetchFavorites();
+          const response2 = await axios.get(
+            `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
+          );
+          if (response2.status === 200) {
+            this.setState({ fullSignedInUser: response2.data });
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
   handle_SignUp = async () => {
     const { name_signUp, user_signUp, signedIn } = this.state;
@@ -80,7 +106,6 @@ class App extends Component {
       //   const response = await axios.get(
       //     `${this.backEndUrl}/${this.apiUserEndpoint}/${user_signIn}`
       //   );
-      console.log(`${this.backEndUrl}/${this.apiNew}/${user_signIn}`);
       const response = await axios.get(
         `${this.backEndUrl}/${this.apiNew}/${user_signIn}`
       );
@@ -92,7 +117,7 @@ class App extends Component {
           signedIn: true,
           name: name,
           user_signIn: user_signIn,
-		  fullSignedInUser: response.data,
+          fullSignedInUser: response.data,
         });
         setTimeout(() => {
           this.setState({ signIn_result: 0 });
@@ -138,18 +163,15 @@ class App extends Component {
     } catch (error) {
       console.error(error);
     }
-	try {
-		const response = await axios.get(
-			`${this.backEndUrl}/${this.apiNew}`
-		);
-		if (response.status === 200) {
-			this.setState({ allUsers: response.data });
-		}
-	}
-	catch (error) {
-		console.error(error);
-  };}
-
+    try {
+      const response = await axios.get(`${this.backEndUrl}/${this.apiNew}`);
+      if (response.status === 200) {
+        this.setState({ allUsers: response.data });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   handle_SignOut = () => {
     this.setState({
@@ -158,7 +180,7 @@ class App extends Component {
       user_signIn: "",
       user_signUp: "",
       name_signUp: "",
-	  fullSignedInUser: {}
+      fullSignedInUser: {},
     });
   };
 
@@ -239,9 +261,11 @@ class App extends Component {
               </h1>
             </div>
           )}
-		  {(this.state.signedIn) && <OwnBook user={this.state.fullSignedInUser}/>}
+          {this.state.signedIn && (
+            <OwnBook user={this.state.fullSignedInUser} onDelete={this.handle_delete} />
+          )}
           <Others favorites={this.state.favorites} />
-		  <Allusers users={this.state.allUsers} />
+          <Allusers users={this.state.allUsers}/>
         </div>
       </div>
     );

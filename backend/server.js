@@ -427,6 +427,22 @@ app.get("/api/new/:username", async (req, res) => {
   
 	res.status(200).json(user);
   });
+
+app.delete("/api/new/:username/:book_id", async (req, res) => {
+//   const { error } = validateBook(req.params);
+  if (error) {
+	return res.status(422).send(error.details[0].message);
+  }
+  try {
+	const user = await removeBook_fromUser(req.params.username, req.params.book_id);
+	if (!user) {
+	  return res.status(404).send("User not found");
+	}
+	res.status(200).json(user);
+  } catch (err) {
+	res.status(500).send(err.message);
+  }
+});
   
 
 ////////////////
