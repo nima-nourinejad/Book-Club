@@ -466,6 +466,7 @@ app.get("api/google/:title", async (req, res) => {
     url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${formattedTitle}&key=${API_KEY}`;
 	console.log(url);
     const response = await axios.get(url);
+	console.log(response);
     const books = [];
     response.data.items.forEach((item) => {
       const book = {
