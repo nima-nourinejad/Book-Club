@@ -257,7 +257,7 @@ app.get("/api/users", async (req, res) => {
 //////////////////////////
 const book_schema = new mongoose.Schema({
   title: { type: String, required: true },
-  Athur: { type: String, diffault: "" },
+  athur: { type: String, diffault: true },
   genre: { type: Array, default: [] },
 });
 const Book_model = mongoose.model("Book_collection", book_schema);
@@ -276,10 +276,11 @@ const user_schema = new mongoose.Schema({
 
 const User_model = mongoose.model("User_collection", user_schema);
 
-async function createBook_document(title, genre) {
+async function createBook_document(title, author, genre) {
   try {
     const document = new Book_model({
       title,
+      author,
       genre,
     });
     const savedDocument = await document.save();
@@ -386,6 +387,36 @@ app.post("/api/new", async (req, res) => {
   }
 });
 
+// app.put("/api/new", async (req, res) => {
+//   const { error } = validateBook(req.body);
+//   if (error) {
+//     return res.status(422).send(error.details[0].message);
+//   }
+//   try {
+//     const oldUser = await User_model.findOne({ username: req.body.username });
+//     if (!oldUser) {
+//       return res.status(404).send("User not found");
+//     }
+//     const book = await createBook_document(req.body.book, []);
+//     if (!book) {
+//       return res.status(500).send("Error creating book");
+//     }
+//     const user = await addBook_toUser(req.body.username, book._id);
+//     if (!user) {
+//       Book_model.deleteOne({ _id: book._id });
+//       return res.status(500).send("Error adding book to user");
+//     }
+//     const userModified = await getFullUser(req.body.username);
+//     if (!userModified) {
+//       Book_model.deleteOne({ _id: book._id });
+//       return res.status(500).send("Error getting user");
+//     }
+//     res.status(200).json(userModified);
+//   } catch (err) {
+//     res.status(500).send(err.message);
+//   }
+// });
+
 app.put("/api/new", async (req, res) => {
   const { error } = validateBook(req.body);
   if (error) {
@@ -396,7 +427,18 @@ app.put("/api/new", async (req, res) => {
     if (!oldUser) {
       return res.status(404).send("User not found");
     }
-    const book = await createBook_document(req.body.book, []);
+    const title = req.body.book;
+    const formattedTitle = title.replaceAll(" ", "+");
+    const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
+    console.log("API_KEY:", process.env.GOOGLE_BOOKS_API_KEY);
+    url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${formattedTitle}&key=${API_KEY}`;
+    console.log(url);
+    const response = await axios.get(url);
+    const result = {
+      title: response.data.items[0]?.volumeInfo?.title,
+      author: response.data.items[0]?.volumeInfo.authors?.toString(),
+    };
+    const book = await createBook_document(result.title, result.author, []);
     if (!book) {
       return res.status(500).send("Error creating book");
     }
@@ -488,12 +530,12 @@ app.get("/api/google/:title", async (req, res) => {
     //     books.push(book);
     //   }
     // });
-	const book = {
-		title: response.data.items[0]?.volumeInfo?.title,
-		Author: response.data.items[0]?.volumeInfo.authors?.toString(),
-		id: response.data.items[0]?.id,
-	}
-	books.push(book);
+    const book = {
+      title: response.data.items[0]?.volumeInfo?.title,
+      Author: response.data.items[0]?.volumeInfo.authors?.toString(),
+      id: response.data.items[0]?.id,
+    };
+    books.push(book);
     res.status(200).json(books);
   } catch (err) {
     res.status(500).send(err.message);

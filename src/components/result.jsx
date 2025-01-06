@@ -3,9 +3,6 @@ import React, { Component } from "react";
 class Result extends Component {
   render() {
     const { searchResult = [] } = this.props;
-	console.log(`searchResult: ${searchResult}`);
-	console.log('searchResult is an array: ${Array.isArray(searchResult)}');
-	console.log(`searchResult.length: ${searchResult.length}`);
     return (
       <div className="container-fluid p-2" id="allUsers">
         <h2 className="text-center mt-5">Search Result</h2>
