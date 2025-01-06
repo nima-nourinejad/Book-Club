@@ -6,31 +6,31 @@ const mongoose = require("mongoose");
 const app = express();
 
 app.use(express.json());
-app.use(cors());
-// app.use(cors({
-//     origin: 'http://localhost:3000', // Allow requests from your frontend
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow these methods
-//     allowedHeaders: ['Content-Type', 'Authorization'], // Add any necessary headers
-// }));
+// app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // Allow requests from your frontend
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow these methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Add any necessary headers
+}));
 
-// // Ensure preflight requests are handled
-// app.options('*', cors());
+// Ensure preflight requests are handled
+app.options('*', cors());
 
-// async function connectToDatabase() {
-//   try {
-//     const connectionString = "mongodb://localhost:27017";
-//     const dbName = "database";
-//     const options = {
-//       useNewUrlParser: true,
-//       useUnifiedTopology: true,
-//     };
-//     await mongoose.connect(`${connectionString}/${dbName}`, options);
-//     console.log(`Connected to MongoDB at ${connectionString}/${dbName}`);
-//   } catch (err) {
-//     console.error("Error connecting to MongoDB: ", err);
-//     process.exit(1);
-//   }
-// }
+async function connectToDatabase() {
+  try {
+    const connectionString = "mongodb://localhost:27017";
+    const dbName = "database";
+    const options = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    };
+    await mongoose.connect(`${connectionString}/${dbName}`, options);
+    console.log(`Connected to MongoDB at ${connectionString}/${dbName}`);
+  } catch (err) {
+    console.error("Error connecting to MongoDB: ", err);
+    process.exit(1);
+  }
+}
 
 // async function connectToDatabase() {
 //   try {
@@ -459,6 +459,7 @@ app.delete("/api/new/:username/:book_id", async (req, res) => {
 });
 
 app.get("/api/google/:title", async (req, res) => {
+	
   const title = req.params.title;
   if (!title) {
 	console.log("No title provided");
@@ -469,6 +470,7 @@ app.get("/api/google/:title", async (req, res) => {
   console.log(formattedTitle);
   try {
     const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
+	console.log("API_KEY:", process.env.GOOGLE_BOOKS_API_KEY);
     url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${formattedTitle}&key=${API_KEY}`;
 	console.log(url);
     const response = await axios.get(url);
