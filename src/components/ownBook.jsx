@@ -8,7 +8,8 @@ class OwnBook extends Component {
 	return user.books.map((book) => (
 		<div className="card shadow-sm" key={book._id}>
 		  <div className="card-body">
-			<p className="card-title">{book.title}</p>
+			<p className="card-title fw-bold">{book.title}</p>
+			<p className="card-title fst-italic">{`by ${book.author}`}</p>
 			<button
 			  className="btn btn-outline-danger"
 			  onClick={() => onDelete(book._id)}

@@ -6,8 +6,6 @@ import Suggest from "./components/suggest";
 import Sign from "./components/sign";
 import Allusers from "./components/allusers";
 import OwnBook from "./components/ownBook";
-import Search from "./components/search";
-import Result from "./components/result";
 import axios from "axios";
 
 class App extends Component {
@@ -242,7 +240,7 @@ class App extends Component {
         <div className="container">
           <NavBar />
           <Top />
-          <div className="container-fluid">
+          {/* <div className="container-fluid">
             <div className="row align-items-center">
               <div className="col-12 col-md-6 d-flex justify-content-center">
                 <Search
@@ -255,7 +253,7 @@ class App extends Component {
                 <Result searchResult={this.state.searchResult} />
               </div>
             </div>
-          </div>
+          </div> */}
           <Sign
             user_signIn={this.state.user_signIn}
             user_signUp={this.state.user_signUp}

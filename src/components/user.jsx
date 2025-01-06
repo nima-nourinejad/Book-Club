@@ -6,9 +6,12 @@ class User extends Component {
       return <p>No suggestions found.</p>;
     }
     return user.books.map((book) => (
-      <p key={book._id} className="card-text">
-        {book.title}
-      </p>
+      <div className="card shadow-sm" key={book._id}>
+        <div className="card-body">
+          <p className="card-title fw-bold">{book.title}</p>
+          <p className="card-title fst-italic">{`by ${book.author}`}</p>
+        </div>
+      </div>
     ));
   };
   render() {
