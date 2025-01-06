@@ -8,14 +8,16 @@ const app = express();
 
 app.use(express.json());
 // app.use(cors());
-app.use(cors({
-    origin: 'http://localhost:3000', // Allow requests from your frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Explicitly allow these methods
-    allowedHeaders: ['Content-Type', 'Authorization'], // Add any necessary headers
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Allow requests from your frontend
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Explicitly allow these methods
+    allowedHeaders: ["Content-Type", "Authorization"], // Add any necessary headers
+  })
+);
 
 // Ensure preflight requests are handled
-app.options('*', cors());
+app.options("*", cors());
 
 async function connectToDatabase() {
   try {
@@ -460,32 +462,38 @@ app.delete("/api/new/:username/:book_id", async (req, res) => {
 });
 
 app.get("/api/google/:title", async (req, res) => {
-	
   const title = req.params.title;
   if (!title) {
-	console.log("No title provided");
-	return res.status(422).send("No title provided");
+    console.log("No title provided");
+    return res.status(422).send("No title provided");
   }
   console.log(title);
   const formattedTitle = title.replaceAll(" ", "+");
   console.log(formattedTitle);
   try {
     const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
-	console.log("API_KEY:", process.env.GOOGLE_BOOKS_API_KEY);
+    console.log("API_KEY:", process.env.GOOGLE_BOOKS_API_KEY);
     url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${formattedTitle}&key=${API_KEY}`;
-	console.log(url);
+    console.log(url);
     const response = await axios.get(url);
-	console.log(response);
-    const books = [];
-    response.data.items.forEach((item) => {
-      const book = {
-        title: item?.volumeInfo?.title,
-        Author: item?.volumeInfo.authors?.toString(),
-        id: item?.id,
-      };
-      books.push(book);
-    });
-    res.status(200).json(books);
+    console.log(response);
+    // const books = [];
+    // response.data.items.forEach((item) => {
+    //   if (item.volumeInfo?.authors) {
+    //     const book = {
+    //       title: item?.volumeInfo?.title,
+    //       Author: item?.volumeInfo.authors?.toString(),
+    //       id: item?.id,
+    //     };
+    //     books.push(book);
+    //   }
+    // });
+	const book = {
+		title: response.data.items[0]?.volumeInfo?.title,
+		Author: response.data.items[0]?.volumeInfo.authors?.toString(),
+		id: response.data.items[0]?.id,
+	}
+    res.status(200).json(book);
   } catch (err) {
     res.status(500).send(err.message);
   }

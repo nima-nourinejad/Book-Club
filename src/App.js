@@ -55,6 +55,7 @@ class App extends Component {
     console.log(`searchTitle: ${searchTitle}`);
     if (!searchTitle) return;
     try {
+		this.setState({ searchResult: [] });
 		const formattedTitle = searchTitle.replaceAll(" ", "+");
 		console.log(`formattedTitle: ${formattedTitle}`);
       console.log(
