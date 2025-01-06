@@ -6,6 +6,8 @@ import Suggest from "./components/suggest";
 import Sign from "./components/sign";
 import Allusers from "./components/allusers";
 import OwnBook from "./components/ownBook";
+import Search from "./components/search";
+import Result from "./components/result";
 import axios from "axios";
 
 class App extends Component {
@@ -24,11 +26,14 @@ class App extends Component {
     name_signUp: "",
     allUsers: [],
     fullSignedInUser: {},
+    searchTitle: "",
+    searchResult: [],
   };
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
   apiUserEndpoint = "api/users";
   apiNew = "api/new";
+  apiGoogle = "api/google";
   fetchOwnBook = async () => {
     const { signedIn, user_signIn } = this.state;
     if (!signedIn) {
@@ -43,6 +48,20 @@ class App extends Component {
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+  handle_search = async () => {
+    const { searchTitle } = this.state;
+    if (!searchTitle) return;
+    try {
+      const response = await axios.get(
+        `${this.backEndUrl}/${this.apiGoogle}/${searchTitle}`
+      );
+      if (response.status === 200) {
+        this.setState({ searchResult: response.data });
+      }
+    } catch (error) {
+		console.error(error);
     }
   };
   handleInputChange = (key, value) => {
@@ -84,7 +103,7 @@ class App extends Component {
       });
       if (response.status === 201) {
         this.setState({ signUp_result: 1, name_signUp: "", user_signUp: "" });
-		this.fetchFavorites();
+        this.fetchFavorites();
         setTimeout(() => {
           this.setState({ signUp_result: 0 });
         }, 2000);
@@ -214,6 +233,20 @@ class App extends Component {
         <div className="container">
           <NavBar />
           <Top />
+          <div className="container-fluid">
+            <div className="row align-items-center">
+              <div className="col-12 col-md-6 d-flex justify-content-center">
+                <Search
+                  searchTitle={this.state.searchTitle}
+                  onInputChange={this.handleInputChange}
+                  onSearch={this.handle_search}
+                />
+              </div>
+              <div className="col-12 col-md-6 d-flex justify-content-center">
+                <Result searchResult={this.state.searchResult} />
+              </div>
+            </div>
+          </div>
           <Sign
             user_signIn={this.state.user_signIn}
             user_signUp={this.state.user_signUp}
@@ -229,27 +262,25 @@ class App extends Component {
           />
           {this.state.signedIn ? (
             <div className="container-fluid">
-
-                <div className="row align-items-center">
-                  <div className="col-12 col-md-6 d-flex justify-content-center">
-                    <Suggest
-                      name={this.state.name}
-                      favoriteBook={this.state.favoriteBook}
-                      onInputChange={this.handleInputChange}
-                      onSubmit={this.handleSubmit}
-                      result={this.state.result}
-                      btn={this.state.btn}
-                    />
-                  </div>
-                  <div className="col-12 col-md-6 d-flex justify-content-center">
-                    <OwnBook
-                      user={this.state.fullSignedInUser}
-                      onDelete={this.handle_delete}
-                    />
-                  </div>
+              <div className="row align-items-center">
+                <div className="col-12 col-md-6 d-flex justify-content-center">
+                  <Suggest
+                    name={this.state.name}
+                    favoriteBook={this.state.favoriteBook}
+                    onInputChange={this.handleInputChange}
+                    onSubmit={this.handleSubmit}
+                    result={this.state.result}
+                    btn={this.state.btn}
+                  />
+                </div>
+                <div className="col-12 col-md-6 d-flex justify-content-center">
+                  <OwnBook
+                    user={this.state.fullSignedInUser}
+                    onDelete={this.handle_delete}
+                  />
                 </div>
               </div>
-
+            </div>
           ) : (
             <div className="d-flex justify-content-center">
               <h1>
