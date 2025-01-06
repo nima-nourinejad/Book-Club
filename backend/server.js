@@ -257,7 +257,7 @@ app.get("/api/users", async (req, res) => {
 //////////////////////////
 const book_schema = new mongoose.Schema({
   title: { type: String, required: true },
-  athur: { type: String, diffault: true },
+  athur: { type: String, required: true },
   genre: { type: Array, default: [] },
 });
 const Book_model = mongoose.model("Book_collection", book_schema);
