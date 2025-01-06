@@ -52,16 +52,24 @@ class App extends Component {
   };
   handle_search = async () => {
     const { searchTitle } = this.state;
+    console.log(`searchTitle: ${searchTitle}`);
     if (!searchTitle) return;
     try {
-      const response = await axios.get(
-        `${this.backEndUrl}/${this.apiGoogle}/${searchTitle}`
+		const formattedTitle = searchTitle.replaceAll(" ", "+");
+		console.log(`formattedTitle: ${formattedTitle}`);
+      console.log(
+        `I will send a get request to ${this.backEndUrl}/${this.apiGoogle}/${formattedTitle}`
       );
+      const response = await axios.get(
+        `${this.backEndUrl}/${this.apiGoogle}/${formattedTitle}`
+      );
+      console.log(`response status: ${response.status}`);
+      console.log(`response: ${response}`);
       if (response.status === 200) {
         this.setState({ searchResult: response.data });
       }
     } catch (error) {
-		console.error(error);
+      console.error(error);
     }
   };
   handleInputChange = (key, value) => {

@@ -458,7 +458,7 @@ app.delete("/api/new/:username/:book_id", async (req, res) => {
   }
 });
 
-app.get("api/google/:title", async (req, res) => {
+app.get("/api/google/:title", async (req, res) => {
   const title = req.params.title;
   if (!title) {
 	console.log("No title provided");
