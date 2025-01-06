@@ -477,7 +477,7 @@ app.get("/api/google/:title", async (req, res) => {
     console.log(url);
     const response = await axios.get(url);
     console.log(response);
-    // const books = [];
+    const books = [];
     // response.data.items.forEach((item) => {
     //   if (item.volumeInfo?.authors) {
     //     const book = {
@@ -493,7 +493,8 @@ app.get("/api/google/:title", async (req, res) => {
 		Author: response.data.items[0]?.volumeInfo.authors?.toString(),
 		id: response.data.items[0]?.id,
 	}
-    res.status(200).json(book);
+	books.push(book);
+    res.status(200).json(books);
   } catch (err) {
     res.status(500).send(err.message);
   }
