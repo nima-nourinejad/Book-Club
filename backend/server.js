@@ -254,6 +254,7 @@ app.get("/api/users", async (req, res) => {
 //////////////////////////
 const book_schema = new mongoose.Schema({
   title: { type: String, required: true },
+  Athur: { type: String, diffault: "" },
   genre: { type: Array, default: [] },
 });
 const Book_model = mongoose.model("Book_collection", book_schema);
@@ -413,45 +414,71 @@ app.put("/api/new", async (req, res) => {
 });
 
 app.get("/api/new", async (req, res) => {
-	  try {
-	const users = await User_model.find().populate("books");
-	res.status(200).json(users);
+  try {
+    const users = await User_model.find().populate("books");
+    res.status(200).json(users);
   } catch (err) {
-	res.status(500).send(err.message);
+    res.status(500).send(err.message);
   }
 });
 
 app.get("/api/new/:username", async (req, res) => {
-	const username = req.params.username;
-  
-	if (!username) {
-	  return res.status(422).send("No username provided");
-	}
-  
-	const user = await User_model.findOne({ username: req.params.username }).populate("books");
-	if (!user) {
-	  return res.status(404).send("User not found");
-	}
-  
-	res.status(200).json(user);
-  });
+  const username = req.params.username;
+
+  if (!username) {
+    return res.status(422).send("No username provided");
+  }
+
+  const user = await User_model.findOne({
+    username: req.params.username,
+  }).populate("books");
+  if (!user) {
+    return res.status(404).send("User not found");
+  }
+
+  res.status(200).json(user);
+});
 
 app.delete("/api/new/:username/:book_id", async (req, res) => {
-//   const { error } = validateBook(req.params);
-//   if (error) {
-// 	return res.status(422).send(error.details[0].message);
-//   }
+  //   const { error } = validateBook(req.params);
+  //   if (error) {
+  // 	return res.status(422).send(error.details[0].message);
+  //   }
   try {
-	const user = await removeBook_fromUser(req.params.username, req.params.book_id);
-	if (!user) {
-	  return res.status(404).send("User not found");
-	}
-	res.status(200).json(user);
+    const user = await removeBook_fromUser(
+      req.params.username,
+      req.params.book_id
+    );
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.status(200).json(user);
   } catch (err) {
-	res.status(500).send(err.message);
+    res.status(500).send(err.message);
   }
 });
-  
+
+app.get("api/google/:title", async (req, res) => {
+  const title = req.params.title;
+  const formattedTitle = title.replaceAll(" ", "+");
+  try {
+    const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
+    url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${formattedTitle}&key=${API_KEY}`;
+    const response = await axios.get(url);
+    const books = [];
+    response.data.items.forEach((item) => {
+      const book = {
+        title: item?.volumeInfo?.title,
+        Author: item?.volumeInfo.authors?.toString(),
+        id: item?.id,
+      };
+      books.push(book);
+    });
+    res.status(200).json(books);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+});
 
 ////////////////
 async function clearFavorites() {
