@@ -432,12 +432,23 @@ app.put("/api/new", async (req, res) => {
     const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
     console.log("API_KEY:", process.env.GOOGLE_BOOKS_API_KEY);
     url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${formattedTitle}&key=${API_KEY}`;
+	console.log('usl start');
     console.log(url);
+	console.log('usl end');
     const response = await axios.get(url);
     const result = {
       title: response.data.items[0]?.volumeInfo?.title,
       author: response.data.items[0]?.volumeInfo.authors?.toString(),
     };
+	console.log('result start');
+	console.log(result);
+	console.log('result end');
+	console.log('result.title start');
+	console.log(result.title);
+	console.log('result.title end');
+	console.log('result.author start');
+	console.log(result.author);
+	console.log('result.author end');
     const book = await createBook_document(result.title, result.author, []);
     if (!book) {
       return res.status(500).send("Error creating book");
