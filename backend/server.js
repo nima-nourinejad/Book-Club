@@ -460,7 +460,13 @@ app.delete("/api/new/:username/:book_id", async (req, res) => {
 
 app.get("api/google/:title", async (req, res) => {
   const title = req.params.title;
+  if (!title) {
+	console.log("No title provided");
+	return res.status(422).send("No title provided");
+  }
+  console.log(title);
   const formattedTitle = title.replaceAll(" ", "+");
+  console.log(formattedTitle);
   try {
     const API_KEY = process.env.GOOGLE_BOOKS_API_KEY;
     url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${formattedTitle}&key=${API_KEY}`;
