@@ -7,17 +7,17 @@ const mongoose = require("mongoose");
 const app = express();
 
 app.use(express.json());
-// app.use(cors());
-app.use(
-  cors({
-    origin: "http://localhost:3000", // Allow requests from your frontend
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Explicitly allow these methods
-    allowedHeaders: ["Content-Type", "Authorization"], // Add any necessary headers
-  })
-);
+app.use(cors());
+// app.use(
+//   cors({
+//     origin: "http://localhost:3000", // Allow requests from your frontend
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Explicitly allow these methods
+//     allowedHeaders: ["Content-Type", "Authorization"], // Add any necessary headers
+//   })
+// );
 
-// Ensure preflight requests are handled
-app.options("*", cors());
+// // Ensure preflight requests are handled
+// app.options("*", cors());
 
 async function connectToDatabase() {
   try {
@@ -559,13 +559,23 @@ app.post("/api/add", async (req, res) => {
 	return res.status(422).send("Missing required fields");
   }
   try {
-	const user = await User_model.findOne({ username});
+	const user = await User_model.findOne({ username}).populate("books");
 	if (!user) {
 	  return res.status(404).send("User not found");
 	}
 	let book = await Book_model.findOne({ title, author });
 	if (!book) {
 	  book = await createBook_document(title, author, []);
+	}
+	let user_books = user.books;
+	let bookExists = false;
+	user_books.forEach((user_book) => {
+	  if (user_book.title === book.title && user_book.author === book.author) {
+		bookExists = true;
+	  }
+	});
+	if (bookExists) {
+	  return res.status(200).send("Book already exists in user's collection");
 	}
 	const userModified = await addBook_toUser(username, book._id);
 	if (!userModified) {

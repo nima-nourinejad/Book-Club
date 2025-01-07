@@ -52,6 +52,8 @@ class App extends Component {
       });
       if (response.status === 200) {
         this.setState({ favoriteBook: "", searched: false, searchResult: [] });
+		this.fetchFavorites();
+        this.fetchOwnBook();
       }
     } catch (error) {
       console.error(error);
