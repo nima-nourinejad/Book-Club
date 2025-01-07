@@ -7,8 +7,6 @@ class DropDown extends Component {
     return (
       <div>
         <br />
-        <p>Sealect the book you want to suggest</p>
-        <br />
         <select
           className="form-select"
           style={{ width: "100%" }}
@@ -25,7 +23,7 @@ class DropDown extends Component {
               </option>
             ))
           )} */}
-		  <option value={index++}>Sealect the book</option>
+		  <option value={index++}>After search, Select the book</option>
 		  {searchResult.map((result) => (
               <option value={index++} key={result.id}>
                 {result.title} by {result.author}
