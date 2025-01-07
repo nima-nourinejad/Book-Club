@@ -52,7 +52,7 @@ class Suggest extends Component {
               <textarea
                 className="form-control"
                 id="favoriteBook"
-                rows="3"
+                rows="2"
                 value={favoriteBook}
                 onChange={(e) => onInputChange("favoriteBook", e.target.value)}
                 placeholder="Share your favorite book"

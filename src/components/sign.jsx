@@ -81,7 +81,7 @@ class Sign extends Component {
                     onChange={(e) =>
                       onInputChange("user_signUp", e.target.value)
                     }
-                    placeholder="Choose a user name"
+                    placeholder="Choose a username"
                   />
                 </div>
 
