@@ -195,16 +195,16 @@ class App extends Component {
     this.fetchFavorites();
   }
   fetchFavorites = async () => {
-    try {
-      const response = await axios.get(
-        `${this.backEndUrl}/${this.apiUserEndpoint}`
-      );
-      if (response.status === 200) {
-        this.setState({ favorites: response.data });
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    // try {
+    //   const response = await axios.get(
+    //     `${this.backEndUrl}/${this.apiUserEndpoint}`
+    //   );
+    //   if (response.status === 200) {
+    //     this.setState({ favorites: response.data });
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
     try {
       const response = await axios.get(`${this.backEndUrl}/${this.apiNew}`);
       if (response.status === 200) {
