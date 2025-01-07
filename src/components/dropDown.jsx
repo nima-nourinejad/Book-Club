@@ -14,7 +14,7 @@ class DropDown extends Component {
 			if (e.target.value === "0") return;
 			addBook(e.target.value - 1);}}
         >
-		  <option value={index++} disabled hidden>Select your book</option>
+		  <option value={index++} disabled>Select your book</option>
 		  {searchResult.map((result) => (
               <option value={index++} key={result.id}>
                 {result.title} by {result.author}
