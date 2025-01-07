@@ -330,6 +330,7 @@ class App extends Component {
                     btn={this.state.btn}
                     searchResult={this.state.searchResult}
                     addBook={this.addBook}
+					searched = {this.state.searched}
                   />
                 </div>
                 <div className="col-12 col-md-6 d-flex justify-content-center">

@@ -30,7 +30,16 @@ class Suggest extends Component {
   };
 
   render() {
-    const { favoriteBook, onInputChange, onSubmit, result, btn, searchResult, addBook } = this.props;
+    const {
+      favoriteBook,
+      onInputChange,
+      onSubmit,
+      result,
+      btn,
+      searchResult,
+      addBook,
+      searched,
+    } = this.props;
 
     return (
       <div className="card shadow-sm m-2">
@@ -58,7 +67,8 @@ class Suggest extends Component {
               {this.btnText(btn)}
             </button>
             <div>{this.handleNotification(result)}</div>
-			<DropDown addBook={addBook} searchResult={searchResult} />
+            {(searched) && 
+			(<DropDown addBook={addBook} searchResult={searchResult} />)}
           </div>
         </div>
       </div>
