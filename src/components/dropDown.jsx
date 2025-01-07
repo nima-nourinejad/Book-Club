@@ -12,9 +12,11 @@ class DropDown extends Component {
         <select
           className="form-select"
           style={{ width: "100%" }}
-          onChange={(e) => addBook(e.target.value)}
+          onChange={(e) => {
+			if (e.target.value === "0") return;
+			addBook(e.target.value - 1);}}
         >
-          {searchResult.length === 0 ? (
+          {/* {searchResult.length === 0 ? (
             <option value={index++}>No results at the moment.</option>
           ) : (
             searchResult.map((result) => (
@@ -22,7 +24,13 @@ class DropDown extends Component {
                 {result.title} by {result.author}
               </option>
             ))
-          )}
+          )} */}
+		  <option value={index++}>Sealect the book</option>
+		  {searchResult.map((result) => (
+              <option value={index++} key={result.id}>
+                {result.title} by {result.author}
+              </option>
+            ))}
         </select>
       </div>
     );

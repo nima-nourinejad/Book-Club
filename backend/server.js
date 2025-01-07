@@ -554,7 +554,7 @@ app.get("/api/google/:title", async (req, res) => {
 });
 
 app.post("/api/add", async (req, res) => {
-  const { usernamem, title, author } = req.body;
+  const { username, title, author } = req.body;
   if (!username || !title || !author) {
 	return res.status(422).send("Missing required fields");
   }
