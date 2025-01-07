@@ -217,16 +217,23 @@ class App extends Component {
 
   handle_SignOut = () => {
     this.setState({
-      signedIn: false,
-      confirmed_user: "",
-      user_signIn: "",
-      user_signUp: "",
-      name_signUp: "",
-      allUsers: [],
-      fullSignedInUser: {},
-      searchTitle: "",
-      searchResult: [],
-      searched: false,
+		name: "",
+		favoriteBook: "",
+		favorites: [],
+		result: 0,
+		btn: true,
+		signedIn: false,
+		confirmed_user: "",
+		user_signIn: "",
+		user_signUp: "",
+		signIn_result: 0,
+		signUp_result: 0,
+		name_signUp: "",
+		allUsers: [],
+		fullSignedInUser: {},
+		searchTitle: "",
+		searchResult: [],
+		searched: false,
     });
   };
 
