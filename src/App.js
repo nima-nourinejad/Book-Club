@@ -37,11 +37,11 @@ class App extends Component {
   apiAdd = "api/add";
 
   addBook = async (value) => {
-	console.log(`value: ${value}`);
+    console.log(`value: ${value}`);
     const { signedIn, user_signIn, favoriteBook, searched, searchResult } =
       this.state;
     if (!signedIn || !searched || !favoriteBook) return;
-	console.log('I am here');
+    console.log("I am here");
     try {
       const title = searchResult[value].title;
       const author = searchResult[value].author;
@@ -52,7 +52,7 @@ class App extends Component {
       });
       if (response.status === 200) {
         this.setState({ favoriteBook: "", searched: false, searchResult: [] });
-		this.fetchFavorites();
+        this.fetchFavorites();
         this.fetchOwnBook();
       }
     } catch (error) {
@@ -222,7 +222,11 @@ class App extends Component {
       user_signIn: "",
       user_signUp: "",
       name_signUp: "",
+      allUsers: [],
       fullSignedInUser: {},
+      searchTitle: "",
+      searchResult: [],
+      searched: false,
     });
   };
 
@@ -319,7 +323,7 @@ class App extends Component {
                     result={this.state.result}
                     btn={this.state.btn}
                     searchResult={this.state.searchResult}
-					addBook={this.addBook}
+                    addBook={this.addBook}
                   />
                 </div>
                 <div className="col-12 col-md-6 d-flex justify-content-center">
