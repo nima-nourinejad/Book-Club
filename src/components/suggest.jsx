@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import DropDown from "./dropDown";
 
 class Suggest extends Component {
   handleNotification = (result) => {
@@ -23,13 +24,13 @@ class Suggest extends Component {
   };
   btnText = (btn) => {
     if (btn) {
-      return "Suggest";
+      return "Search";
     }
     return "Wait";
   };
 
   render() {
-    const { favoriteBook, onInputChange, onSubmit, result, btn } = this.props;
+    const { favoriteBook, onInputChange, onSubmit, result, btn, searchResult } = this.props;
 
     return (
       <div className="card shadow-sm m-2">
@@ -57,6 +58,7 @@ class Suggest extends Component {
               {this.btnText(btn)}
             </button>
             <div>{this.handleNotification(result)}</div>
+			<DropDown searchResult={searchResult} />
           </div>
         </div>
       </div>

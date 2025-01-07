@@ -535,7 +535,7 @@ app.get("/api/google/:title", async (req, res) => {
       if (item.volumeInfo?.authors) {
         const book = {
           title: item?.volumeInfo?.title,
-          Author: item?.volumeInfo.authors?.toString(),
+          author: item?.volumeInfo.authors?.toString(),
           id: item?.id,
         };
         books.push(book);
@@ -552,6 +552,29 @@ app.get("/api/google/:title", async (req, res) => {
     res.status(500).send(err.message);
   }
 });
+
+app.post("/api/add", async (req, res) => {
+  const { usernamem, title, author } = req.body;
+  if (!username || !title || !author) {
+	return res.status(422).send("Missing required fields");
+  }
+  try {
+	const user = await User_model.findOne({ username});
+	if (!user) {
+	  return res.status(404).send("User not found");
+	}
+	let book = await Book_model.findOne({ title, author });
+	if (!book) {
+	  book = await createBook_document(title, author, []);
+	}
+	const userModified = await addBook_toUser(username, book._id);
+	if (!userModified) {
+	  return res.status(500).send("Error adding book to user");
+	}
+	res.status(200).json(userModified);
+  } catch (err) {
+	res.status(500).send(err.message);
+  }});
 
 ////////////////
 async function clearFavorites() {

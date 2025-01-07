@@ -26,12 +26,36 @@ class App extends Component {
     fullSignedInUser: {},
     searchTitle: "",
     searchResult: [],
+    searched: false,
   };
+
   backEndUrl = "https://book-club-qr21.onrender.com";
   apiEndpoint = "api/favorites";
   apiUserEndpoint = "api/users";
   apiNew = "api/new";
   apiGoogle = "api/google";
+  apiAdd = "api/add";
+
+  addBook = async (value) => {
+    const { signedIn, user_signIn, favoriteBook, searched, searchResult } =
+      this.state;
+    if (!signedIn || !searched || favoriteBook) return;
+    try {
+      const title = searchResult[value].title;
+      const author = searchResult[value].author;
+      const response = await axios.post(`${this.backEndUrl}/${this.apiAdd}`, {
+        username: user_signIn,
+        title: title,
+        author: author,
+      });
+      if (response.status === 200) {
+        this.setState({ favoriteBook: "", searched: false, searchResult: [] });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   fetchOwnBook = async () => {
     const { signedIn, user_signIn } = this.state;
     if (!signedIn) {
@@ -53,9 +77,9 @@ class App extends Component {
     console.log(`searchTitle: ${searchTitle}`);
     if (!searchTitle) return;
     try {
-		this.setState({ searchResult: [] });
-		const formattedTitle = searchTitle.replaceAll(" ", "+");
-		console.log(`formattedTitle: ${formattedTitle}`);
+      this.setState({ searchResult: [] });
+      const formattedTitle = searchTitle.replaceAll(" ", "+");
+      console.log(`formattedTitle: ${formattedTitle}`);
       console.log(
         `I will send a get request to ${this.backEndUrl}/${this.apiGoogle}/${formattedTitle}`
       );
@@ -204,6 +228,18 @@ class App extends Component {
       return;
     }
     try {
+      this.setState({ searchResult: [], searched: true });
+      const formattedTitle = favoriteBook.replaceAll(" ", "+");
+      const response = await axios.get(
+        `${this.backEndUrl}/${this.apiGoogle}/${formattedTitle}`
+      );
+      if (response.status === 200) {
+        this.setState({ searchResult: response.data });
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    try {
       this.setState({ btn: false });
       const response = await axios.put(`${this.backEndUrl}/${this.apiNew}`, {
         username: user_signIn,
@@ -278,6 +314,8 @@ class App extends Component {
                     onSubmit={this.handleSubmit}
                     result={this.state.result}
                     btn={this.state.btn}
+                    searchResult={this.state.searchResult}
+					addBook={this.addBook}
                   />
                 </div>
                 <div className="col-12 col-md-6 d-flex justify-content-center">
