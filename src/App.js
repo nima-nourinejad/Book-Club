@@ -37,9 +37,11 @@ class App extends Component {
   apiAdd = "api/add";
 
   addBook = async (value) => {
+	console.log(`value: ${value}`);
     const { signedIn, user_signIn, favoriteBook, searched, searchResult } =
       this.state;
-    if (!signedIn || !searched || favoriteBook) return;
+    if (!signedIn || !searched || !favoriteBook) return;
+	console.log('I am here');
     try {
       const title = searchResult[value].title;
       const author = searchResult[value].author;
@@ -239,32 +241,32 @@ class App extends Component {
     } catch (error) {
       console.error(error);
     }
-    try {
-      this.setState({ btn: false });
-      const response = await axios.put(`${this.backEndUrl}/${this.apiNew}`, {
-        username: user_signIn,
-        book: favoriteBook,
-      });
-      if (response.status === 200) {
-        if (!signedIn) {
-          this.setState({ name: "" });
-        }
-        this.setState({
-          result: 1,
-          favoriteBook: "",
-        });
-        setTimeout(() => {
-          this.setState({ result: 0, btn: true });
-        }, 2000);
-        this.fetchFavorites();
-        this.fetchOwnBook();
-      }
-    } catch (error) {
-      this.setState({ result: 2 });
-      setTimeout(() => {
-        this.setState({ result: 0, btn: true });
-      }, 2000);
-    }
+    // try {
+    //   this.setState({ btn: false });
+    //   const response = await axios.put(`${this.backEndUrl}/${this.apiNew}`, {
+    //     username: user_signIn,
+    //     book: favoriteBook,
+    //   });
+    //   if (response.status === 200) {
+    //     if (!signedIn) {
+    //       this.setState({ name: "" });
+    //     }
+    //     this.setState({
+    //       result: 1,
+    //       favoriteBook: "",
+    //     });
+    //     setTimeout(() => {
+    //       this.setState({ result: 0, btn: true });
+    //     }, 2000);
+    //     this.fetchFavorites();
+    //     this.fetchOwnBook();
+    //   }
+    // } catch (error) {
+    //   this.setState({ result: 2 });
+    //   setTimeout(() => {
+    //     this.setState({ result: 0, btn: true });
+    //   }, 2000);
+    // }
   };
 
   render() {
