@@ -234,6 +234,7 @@ class App extends Component {
 		searchResult: [],
 		searched: false,
     });
+	this.fetchFavorites();
   };
 
   handleSubmit = async () => {
