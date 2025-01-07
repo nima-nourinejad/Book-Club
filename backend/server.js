@@ -531,22 +531,22 @@ app.get("/api/google/:title", async (req, res) => {
     const response = await axios.get(url);
     console.log(response);
     const books = [];
-    // response.data.items.forEach((item) => {
-    //   if (item.volumeInfo?.authors) {
-    //     const book = {
-    //       title: item?.volumeInfo?.title,
-    //       Author: item?.volumeInfo.authors?.toString(),
-    //       id: item?.id,
-    //     };
-    //     books.push(book);
-    //   }
-    // });
-    const book = {
-      title: response.data.items[0]?.volumeInfo?.title,
-      Author: response.data.items[0]?.volumeInfo.authors?.toString(),
-      id: response.data.items[0]?.id,
-    };
-    books.push(book);
+    response.data.items.forEach((item) => {
+      if (item.volumeInfo?.authors) {
+        const book = {
+          title: item?.volumeInfo?.title,
+          Author: item?.volumeInfo.authors?.toString(),
+          id: item?.id,
+        };
+        books.push(book);
+      }
+    });
+    // const book = {
+    //   title: response.data.items[0]?.volumeInfo?.title,
+    //   Author: response.data.items[0]?.volumeInfo.authors?.toString(),
+    //   id: response.data.items[0]?.id,
+    // };
+    // books.push(book);
     res.status(200).json(books);
   } catch (err) {
     res.status(500).send(err.message);
