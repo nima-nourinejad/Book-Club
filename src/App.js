@@ -228,7 +228,6 @@ class App extends Component {
 		signIn_result: 0,
 		signUp_result: 0,
 		name_signUp: "",
-		allUsers: [],
 		fullSignedInUser: {},
 		searchTitle: "",
 		searchResult: [],
