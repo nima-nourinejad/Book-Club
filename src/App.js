@@ -219,7 +219,6 @@ class App extends Component {
     this.setState({
 		name: "",
 		favoriteBook: "",
-		favorites: [],
 		result: 0,
 		btn: true,
 		signedIn: false,
