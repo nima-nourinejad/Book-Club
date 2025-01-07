@@ -11,15 +11,17 @@ class DropDown extends Component {
           className="form-select"
           style={{ width: "100%" }}
           onChange={(e) => {
-			if (e.target.value === "0") return;
-			addBook(e.target.value - 1);}}
+            if (e.target.value) addBook(e.target.value);
+          }}
         >
-		  <option value={index++} disabled>Select your book</option>
-		  {searchResult.map((result) => (
-              <option value={index++} key={result.id}>
-                {result.title} by {result.author}
-              </option>
-            ))}
+          <option value="" style={{ color: "grey" }} disabled selected>
+            Select your book
+          </option>
+          {searchResult.map((result) => (
+            <option value={index++} key={result.id}>
+              {result.title} by {result.author}
+            </option>
+          ))}
         </select>
       </div>
     );

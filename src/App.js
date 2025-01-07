@@ -319,7 +319,7 @@ class App extends Component {
           />
           {this.state.signedIn ? (
             <div className="container-fluid">
-              <div className="row align-items-center">
+              <div className="row align-items-start">
                 <div className="col-12 col-md-6 d-flex justify-content-center">
                   <Suggest
                     name={this.state.name}
